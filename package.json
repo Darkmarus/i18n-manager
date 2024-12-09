@@ -1,0 +1,85 @@
+{
+  "name": "i18n-manager",
+  "displayName": "i18n-manager",
+  "description": "Easy i18n Manager is an intuitive and efficient application designed to simplify the management of i18n files (JSON format). Perfect for developers and translators, it allows you to edit, organize, and validate translation files effortlessly. With a user-friendly interface, the app provides features like key comparison between different locales, syntax validation, and export/import options. Streamline your localization workflow and ensure consistent translations across your projects.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "i18n-manager.openManagerWIthSelection",
+          "group": "navigation",
+          "when": "resourceLangId == json"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "i18n-manager.openManagerWIthSelection",
+        "title": "Open with i18n Manager"
+      }
+    ],
+    "configuration": {
+      "title": "i18n json editor",
+      "properties": {
+        "i18nManager.jsonSpace": {
+          "default": 2,
+          "type": [
+            "string",
+            "number"
+          ],
+          "description": "A String or Number that's used to insert white space into the output JSON"
+        },
+        "i18nManager.lineEnding": {
+          "default": "\n",
+          "type": [
+            "string"
+          ],
+          "description": "String used to signify the end of a line"
+        },
+        "i18nManager.supportedFolders": {
+          "default": [
+            "i18n"
+          ],
+          "type": "array",
+          "description": "An array of folder names that's used to open the extension through the right click (restart required after changing the value)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "10.0.9",
+    "@types/node": "20.x",
+    "@types/vscode": "1.95.0",
+    "@typescript-eslint/eslint-plugin": "8.16.0",
+    "@typescript-eslint/parser": "8.16.0",
+    "@vscode/test-cli": "0.0.10",
+    "@vscode/test-electron": "2.4.1",
+    "esbuild": "0.24.0",
+    "eslint": "9.16.0",
+    "npm-run-all": "4.1.5",
+    "typescript": "5.7.2"
+  }
+}
