@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Section } from "../type/section-type";
+  import type { Section } from "../models/section-type";
   import Table from "./editor/Table.svelte";
   import ChangesLogIcon from "./icons/ChangesLogIcon.svelte";
   import JsonEditIcon from "./icons/JsonEditIcon.svelte";

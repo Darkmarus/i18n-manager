@@ -1,6 +1,7 @@
 <script lang="ts">
   import SearchIcon from "../icons/SearchIcon.svelte";
   import Pagination from "./Pagination.svelte";
+  import { vscodeEvents } from "../../states/vscode-events.svelte";
 </script>
 
 <form class="group relative mb-4">
@@ -27,14 +28,22 @@
       <th class="p-4 w-4/12 text-center uppercase">actions</th>
     </tr>
   </thead>
-  <tbody
-    class="bg-grey-light flex flex-col items-center justify-between overflow-y-auto w-full"
-    style="height: 70vh;"
-  >
-    <tr class="flex w-full mb-4 border-b-2 border-b-blue-300">
-      <td class="p-4 w-8/12">Dogs</td>
-      <td class="p-4 w-4/12 text-center">Cats</td>
-    </tr>
+  <tbody class="bg-grey-light overflow-y-auto w-full" style="height: 70vh;">
+    {#if vscodeEvents.page}
+      {#each vscodeEvents.page.data as item}
+        <tr class="flex w-full border-b-2 border-blue-500 py-5">
+          <td class="w-8/12">
+            {#each item.path as p}
+              <span
+                class="bg-gray-100 text-gray-800 me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 cursor-pointer select-none"
+                >{p}</span
+              >
+            {/each}
+          </td>
+          <td class="w-4/12 text-center">Cats</td>
+        </tr>
+      {/each}
+    {/if}
   </tbody>
 </table>
 

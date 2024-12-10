@@ -1,3 +1,5 @@
+import type { IPagination } from "../models/pagination.interface";
+
 enum event {
   LOADED = "loaded",
   sendOnloadEvent = "sendOnloadEvent",
@@ -5,10 +7,10 @@ enum event {
 
 class VscodeEvents {
   private readonly _vscode = acquireVsCodeApi();
-  dataTable: any = $state(null);
+  page = $state.raw<IPagination | undefined>();
 
   private readonly _events: { [key: string]: (data: any) => void } = {
-    "refresh-table": this.updateDataTable,
+    "refresh-table": this.updateDataTable.bind(this),
   };
 
   constructor() {
@@ -28,8 +30,8 @@ class VscodeEvents {
     });
   }
 
-  private updateDataTable(data: any) {
-    // this.dataTable = data;
+  private updateDataTable(page: IPagination) {
+    this.page = page;
   }
 
   sendOnloadEvent() {

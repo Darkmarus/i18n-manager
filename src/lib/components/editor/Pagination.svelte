@@ -1,146 +1,51 @@
+<script lang="ts">
+  import Button from "../buttons/Button.svelte";
+  import { vscodeEvents } from "../../states/vscode-events.svelte";
+
+  const pages = $derived.by(() => {
+    const pages: any[] = [];
+    if (vscodeEvents.page === undefined) {
+      return pages;
+    }
+
+    const currentPage = vscodeEvents.page.page;
+    const totalPages = vscodeEvents.page.totalPages;
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, "...", totalPages);
+      } else if (currentPage > totalPages - 3) {
+        pages.push(1, "...", totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(
+          1,
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPages
+        );
+      }
+    }
+    return pages;
+  });
+</script>
+
 <div class="flex items-center justify-center">
   <div class="flex space-x-1">
-    <button
-      class="
-      rounded-md
-      border
-      border-slate-300
-      py-2
-      px-3
-      text-center
-      text-sm
-      transition-all
-      shadow-sm
-      hover:shadow-lg
-      text-slate-600
-      hover:text-white
-      hover:bg-slate-800
-      hover:border-slate-800
-      focus:text-white
-      focus:bg-slate-800
-      focus:border-slate-800
-      active:border-slate-800
-      active:text-white
-      active:bg-slate-800
-      disabled:pointer-events-none
-      disabled:opacity-50
-      disabled:shadow-none
-      ml-2"
-    >
-      Prev
-    </button>
-    <button
-      class="min-w-9
-      rounded-md
-      bg-slate-800
-      py-2
-      px-3
-      border
-      border-transparent
-      text-center
-      text-sm
-      text-white
-      transition-all
-      shadow-md
-      hover:shadow-lg
-      focus:bg-slate-700
-      focus:shadow-none
-      active:bg-slate-700
-      hover:bg-slate-700
-      active:shadow-none
-      disabled:pointer-events-none
-      disabled:opacity-50
-      disabled:shadow-none
-      ml-2"
-    >
-      1
-    </button>
-    <button
-      class="min-w-9
-      rounded-md
-      border
-      border-slate-300
-      py-2
-      px-3
-      text-center
-      text-sm
-      transition-all
-      shadow-sm
-      hover:shadow-lg
-      text-slate-600
-      hover:text-white
-      hover:bg-slate-800
-      hover:border-slate-800
-      focus:text-white
-      focus:bg-slate-800
-      focus:border-slate-800
-      active:border-slate-800
-      active:text-white
-      active:bg-slate-800
-      disabled:pointer-events-none
-      disabled:opacity-50
-      disabled:shadow-none
-      ml-2"
-    >
-      2
-    </button>
-    <button
-      class="min-w-9
-      rounded-md
-      border
-      border-slate-300
-      py-2
-      px-3
-      text-center
-      text-sm
-      transition-all
-      shadow-sm
-      hover:shadow-lg
-      text-slate-600
-      hover:text-white
-      hover:bg-slate-800
-      hover:border-slate-800
-      focus:text-white
-      focus:bg-slate-800
-      focus:border-slate-800
-      active:border-slate-800
-      active:text-white
-      active:bg-slate-800
-      disabled:pointer-events-none
-      disabled:opacity-50
-      disabled:shadow-none
-      ml-2"
-    >
-      3
-    </button>
-    <button
-      class="min-w-9
-      rounded-md
-      border
-      border-slate-300
-      py-2
-      px-3
-      text-center
-      text-sm
-      transition-all
-      shadow-sm
-      hover:shadow-lg
-      text-slate-600
-      hover:text-white
-      hover:bg-slate-800
-      hover:border-slate-800
-      focus:text-white
-      focus:bg-slate-800
-      focus:border-slate-800
-      active:border-slate-800
-      active:text-white
-      active:bg-slate-800
-      disabled:pointer-events-none
-      disabled:opacity-50
-      disabled:shadow-none
-      ml-2"
-    >
-      Next
-    </button>
+    <Button>Prev</Button>
+
+    {#each pages as p}
+      <Button active={p === vscodeEvents?.page?.page} disabled={p === "..."}
+        >{p}</Button
+      >
+    {/each}
+
+    <Button>Next</Button>
   </div>
 </div>
