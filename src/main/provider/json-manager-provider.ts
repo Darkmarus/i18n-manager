@@ -1,9 +1,9 @@
-import { IProperty } from "./../model/pagination.interface";
 import type { Language } from "@main/model/language.interface";
-import type { IPagination, IProperty } from "@main/model/pagination.interface";
+import type { IPagination } from "@main/model/pagination.interface";
 import { VscodeUtil } from "@main/util/vscode-util";
 import * as fs from "fs";
 import * as vscode from "vscode";
+import { IProperty } from "./../model/pagination.interface";
 
 export class JsonManagerProvider {
   private readonly _languages: Language[] = [];
@@ -93,7 +93,9 @@ export class JsonManagerProvider {
     return result;
   }
 
-  filterAndPaginate(key: string, data: IProperty[], page = 1, size = 10): IPagination {
+  filterAndPaginate(key: string, page = 1, size = 10): IPagination {
+    const data = this._languages[this._languageDefault].flatten;
+
     if (!Array.isArray(data)) {
       throw new Error("El parámetro `data` debe ser un arreglo.");
     }
@@ -117,7 +119,8 @@ export class JsonManagerProvider {
       data: filteredData.slice(startIndex, endIndex),
       page,
       size,
-      total: filteredData.length,
+      totalPages: Math.ceil(filteredData.length / size),
+      totalElements: filteredData.length,
     };
   }
 

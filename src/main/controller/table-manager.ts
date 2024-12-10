@@ -40,7 +40,7 @@ export class TableManager {
 
   loadData() {
     this._eventsProvider?.refreshDataPublish(
-      this._jsonManagerProvider.getLanguage().flatten
+      this._jsonManagerProvider.filterAndPaginate("")
     );
   }
 
