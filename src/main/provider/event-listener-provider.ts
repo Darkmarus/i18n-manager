@@ -1,16 +1,12 @@
 import type { TableManager } from "@main/controller/table-manager";
-import type { IPagination } from "@main/model/pagination.interface";
 import * as vscode from "vscode";
 
 enum EventsListener {
   LOADED = "loaded",
+  CHANGE_PAGE_AND_FIlTER = "change-page-filter",
 }
 
-enum EventsPost {
-  REFRESH_TABLE = "refresh-table",
-}
-
-export class EventsProvider {
+export class EventListenerProvider {
   private readonly _webviewPanel: vscode.WebviewPanel;
   private readonly _tableManager: TableManager;
 
@@ -21,16 +17,17 @@ export class EventsProvider {
 
   watchEvents() {
     this._webviewPanel.webview.onDidReceiveMessage((message) => {
-      if (message.type === EventsListener.LOADED) {
-        this._tableManager.loadData();
+      switch (message.type) {
+        case EventsListener.LOADED:
+          this._tableManager.loadData();
+          break;
+        case EventsListener.CHANGE_PAGE_AND_FIlTER:
+          this._tableManager.filterAndPaginate(message.data);
+          break;
+        default:
+          console.log("Event not found", message.type);
+          break;
       }
-    });
-  }
-
-  refreshDataPublish(data: IPagination) {
-    this._webviewPanel.webview.postMessage({
-      command: EventsPost.REFRESH_TABLE,
-      data,
     });
   }
 }

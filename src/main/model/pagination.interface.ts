@@ -3,6 +3,10 @@ export interface IProperty {
   value: any;
 }
 
+export interface IBasicPagination {
+  page: number;
+  size: number;
+}
 export interface IPagination {
   data: IProperty[];
   page: number;

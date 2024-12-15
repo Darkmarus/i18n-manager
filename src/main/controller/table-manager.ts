@@ -1,4 +1,6 @@
-import { EventsProvider } from "@main/provider/events-provider";
+import type { IBasicFilterAndPaginationEvent } from "@main/model/events/listener/basic-filter-and-pagination.event";
+import { EventListenerProvider } from "@main/provider/event-listener-provider";
+import { EventPublishProvider } from "@main/provider/event-publish-provider";
 import type { JsonManagerProvider } from "@main/provider/json-manager-provider";
 import { VscodeUtil } from "@main/util/vscode-util";
 import * as fs from "fs";
@@ -7,7 +9,8 @@ import * as vscode from "vscode";
 
 export class TableManager {
   private _panel?: vscode.WebviewPanel;
-  private _eventsProvider?: EventsProvider;
+  private _eventPublishProvider?: EventPublishProvider;
+  private _eventListenerProvider?: EventListenerProvider;
 
   constructor(
     private readonly _context: vscode.ExtensionContext,
@@ -32,15 +35,23 @@ export class TableManager {
         ],
       }
     );
-    this._eventsProvider = new EventsProvider(this, this._panel);
-    this._eventsProvider.watchEvents();
+    this._eventListenerProvider = new EventListenerProvider(this, this._panel);
+    this._eventListenerProvider.watchEvents();
+
+    this._eventPublishProvider = new EventPublishProvider(this._panel);
 
     this._panel.webview.html = this.getTemplate();
   }
 
   loadData() {
-    this._eventsProvider?.refreshDataPublish(
+    this._eventPublishProvider?.refreshDataPublish(
       this._jsonManagerProvider.filterAndPaginate("")
+    );
+  }
+
+  filterAndPaginate({ filter, page, size }: IBasicFilterAndPaginationEvent) {
+    this._eventPublishProvider?.refreshDataPublish(
+      this._jsonManagerProvider.filterAndPaginate(filter, page, size)
     );
   }
 
