@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Section } from "../models/section-type";
+  import { tableProvider } from "../states/table-provider.svelte";
   import Table from "./editor/Table.svelte";
   import ChangesLogIcon from "./icons/ChangesLogIcon.svelte";
   import JsonEditIcon from "./icons/JsonEditIcon.svelte";
@@ -27,6 +28,7 @@
   const setSectionActive = (item: Section) => {
     sectionActive = item;
   };
+  $inspect("tableProvider", tableProvider.data);
 </script>
 
 <div>
@@ -66,7 +68,7 @@
   {/if}
 
   {#if sectionActive.type === "EDITOR"}
-    <Table />
+    <Table page={tableProvider.data} />
   {/if}
 
   {#if sectionActive.type === "SETTINGS"}

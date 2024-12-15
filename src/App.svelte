@@ -1,9 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Layout from "./lib/components/Layout.svelte";
-  import { vscodeEvents } from "./lib/states/vscode-events.svelte";
+  import { vscodeEventPublisher } from "./lib/states/vscode-event-publish.svelte";
+  import { vscodeEventListener } from "./lib/states/vscode-event-listener.svelte";
 
-  onMount(() => vscodeEvents.sendOnloadEvent());
+  onMount(() => {
+    vscodeEventListener.listeningEvents();
+    vscodeEventPublisher.sendOnloadEvent();
+  });
 </script>
 
 <Layout />

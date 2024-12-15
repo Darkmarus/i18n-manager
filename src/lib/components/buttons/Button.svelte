@@ -3,8 +3,9 @@
     active?: boolean;
     disabled?: boolean;
     children?: any;
+    onclick?: any;
   }
-  let { children, active = false, disabled=false }: Props = $props();
+  let { children, active = false, disabled = false, onclick }: Props = $props();
 </script>
 
 <button
@@ -32,7 +33,8 @@
       select-none
       ml-2"
   class:bg-blue-500={active}
-  disabled={disabled}
+  {disabled}
+  onclick={() => onclick && onclick()}
 >
   {@render children()}
 </button>

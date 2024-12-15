@@ -1,25 +1,17 @@
 <script lang="ts">
-  import SearchIcon from "../icons/SearchIcon.svelte";
+  import type { IPagination } from "../../models/pagination.interface";
+  import { tableProvider } from "../../states/table-provider.svelte";
   import Pagination from "./Pagination.svelte";
-  import { vscodeEvents } from "../../states/vscode-events.svelte";
+  import SearchInput from "./SearchInput.svelte";
+
+  interface Props {
+    page?: IPagination;
+  }
+
+  let { page }: Props = $props();
 </script>
 
-<form class="group relative mb-4">
-  <SearchIcon />
-  <input
-    class="
-    leading-6
-    placeholder-slate-400
-    rounded-md
-    py-2
-    pl-10
-    ring-1
-    shadow-sm"
-    type="text"
-    aria-label="Filter properties"
-    placeholder="Filter properties..."
-  />
-</form>
+<SearchInput onSearch={(filter) => tableProvider.filterTable(filter)} />
 
 <table class="text-left w-full">
   <thead class="bg-blue-500 flex text-white w-full">
@@ -28,9 +20,12 @@
       <th class="p-4 w-4/12 text-center uppercase">actions</th>
     </tr>
   </thead>
-  <tbody class="bg-grey-light overflow-y-auto w-full" style="height: 70vh;">
-    {#if vscodeEvents.page}
-      {#each vscodeEvents.page.data as item}
+  <tbody
+    class="flex flex-col bg-grey-light overflow-y-auto w-full mb-5"
+    style="height: calc( 100vh - 250px );"
+  >
+    {#if page}
+      {#each page.data as item}
         <tr class="flex w-full border-b-2 border-blue-500 py-5">
           <td class="w-8/12">
             {#each item.path as p}
@@ -47,4 +42,10 @@
   </tbody>
 </table>
 
-<Pagination />
+<Pagination
+  onChangePage={(page) => {
+    tableProvider.changePage(page);
+  }}
+  onNextPage={() => tableProvider.nextPage()}
+  onPrevPage={() => tableProvider.prevPage()}
+/>
