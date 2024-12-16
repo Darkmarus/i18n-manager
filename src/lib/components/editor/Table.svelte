@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { IPagination } from "../../models/pagination.interface";
   import { tableProvider } from "../../states/table-provider.svelte";
+  import JsonEditIcon from "../icons/JsonEditIcon.svelte";
+  import TrashIcon from "../icons/TrashIcon.svelte";
   import Pagination from "./Pagination.svelte";
   import SearchInput from "./SearchInput.svelte";
 
@@ -35,7 +37,15 @@
               >
             {/each}
           </td>
-          <td class="w-4/12 text-center">Cats</td>
+          <td class="w-4/12 flex justify-center">
+            <div class="cursor-pointer">
+              <JsonEditIcon />
+            </div>
+
+            <div class="cursor-pointer ml-2">
+              <TrashIcon />
+            </div>
+          </td>
         </tr>
       {/each}
     {/if}
