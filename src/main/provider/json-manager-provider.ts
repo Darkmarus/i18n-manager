@@ -93,7 +93,7 @@ export class JsonManagerProvider {
     return result;
   }
 
-  filterAndPaginate(key: string, page = 1, size = 10): IPagination {
+  filterAndPaginate(filter: string[], page = 1, size = 18): IPagination {
     const data = this._languages[this._languageDefault].flatten;
 
     if (!Array.isArray(data)) {
@@ -104,13 +104,14 @@ export class JsonManagerProvider {
       throw new Error("Los parámetros `size` y `page` deben ser mayores a 0.");
     }
 
-    const filteredData = key
-      ? data.filter((item) =>
-          item.path.some((part) =>
-            part.toLowerCase().includes(key.toLowerCase())
+    const filteredData =
+      filter.length > 0
+        ? data.filter((item) =>
+            item.path.some((part) =>
+              filter.some((f) => part.toLowerCase().includes(f.toLowerCase()))
+            )
           )
-        )
-      : data;
+        : data;
 
     const startIndex = (page - 1) * size;
     const endIndex = startIndex + size;

@@ -45,7 +45,7 @@ export class TableManager {
 
   loadData() {
     this._eventPublishProvider?.refreshDataPublish(
-      this._jsonManagerProvider.filterAndPaginate("")
+      this._jsonManagerProvider.filterAndPaginate([])
     );
   }
 
