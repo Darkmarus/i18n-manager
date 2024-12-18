@@ -1,5 +1,5 @@
 export interface IBasicFilterAndPaginationEvent {
-  filter: string;
+  filter: string[];
   page: number;
   size: number;
 }

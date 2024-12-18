@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Section } from "../models/section-type";
   import { tableProvider } from "../states/table-provider.svelte";
-  import Table from "./editor/Table.svelte";
+  import EditorLayout from "./editor/EditorLayout.svelte";
   import ChangesLogIcon from "./icons/ChangesLogIcon.svelte";
   import JsonEditIcon from "./icons/JsonEditIcon.svelte";
   import SettingsIcon from "./icons/SettingsIcon.svelte";
@@ -68,7 +68,7 @@
   {/if}
 
   {#if sectionActive.type === "EDITOR"}
-    <Table page={tableProvider.data} />
+    <EditorLayout />
   {/if}
 
   {#if sectionActive.type === "SETTINGS"}

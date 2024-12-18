@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { tableProvider } from "../../states/table-provider.svelte";
-  import { vscodeEventPublisher } from "../../states/vscode-event-publish.svelte";
-  import Button from "../buttons/Button.svelte";
+  import { tableProvider } from "../../../states/table-provider.svelte";
+  import Button from "../../buttons/Button.svelte";
 
   interface Props {
     onChangePage: (page: number) => void;
