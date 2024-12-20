@@ -5,10 +5,11 @@ import { vscodeEventPublisher } from "./vscode-event-publish.svelte";
 class TableProvider {
   data = $state.raw<IPagination | undefined>();
   filter = $state.raw<string[]>([]);
+  modeOrderStrict = $state.raw<boolean>(false);
 
   filterTable(filter: string[]) {
     this.filter = filter;
-    const data = { filter: [...filter], page: 1, size: this.data?.size || 10 };
+    const data = { filter: [...filter], page: 1, size: this.data?.size || 10 ,modeOrderStrict: this.modeOrderStrict,};
     this.publishChangeTableEvent(data);
   }
 
@@ -17,6 +18,7 @@ class TableProvider {
       page: (this.data?.page || 0) + 1,
       size: this.data?.size || 10,
       filter: [...this.filter],
+      modeOrderStrict: this.modeOrderStrict,
     };
     this.publishChangeTableEvent(data);
   }
@@ -26,6 +28,7 @@ class TableProvider {
       page: (this.data?.page || 0) - 1,
       size: this.data?.size || 10,
       filter: [...this.filter],
+      modeOrderStrict: this.modeOrderStrict,
     };
     this.publishChangeTableEvent(data);
   }
@@ -35,6 +38,7 @@ class TableProvider {
       page,
       size: this.data?.size || 10,
       filter: [...this.filter],
+      modeOrderStrict: this.modeOrderStrict,
     };
     this.publishChangeTableEvent(data);
   }
