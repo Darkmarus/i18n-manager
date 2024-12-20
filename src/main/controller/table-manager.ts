@@ -1,8 +1,8 @@
-import type { IBasicFilterAndPaginationEvent } from "@main/model/events/listener/basic-filter-and-pagination.event";
-import { EventListenerProvider } from "@main/provider/event-listener-provider";
-import { EventPublishProvider } from "@main/provider/event-publish-provider";
-import type { JsonManagerProvider } from "@main/provider/json-manager-provider";
-import { VscodeUtil } from "@main/util/vscode-util";
+import type { IBasicFilterAndPaginationEvent } from "../model/events/listener/basic-filter-and-pagination.event";
+import { EventListenerProvider } from "../provider/event-listener-provider";
+import { EventPublishProvider } from "../provider/event-publish-provider";
+import type { JsonManagerProvider } from "../provider/json-manager-provider";
+import { VscodeUtil } from "../util/vscode-util";
 import * as fs from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
@@ -18,12 +18,11 @@ export class TableManager {
   ) {}
 
   async init() {
+    await this._jsonManagerProvider.init();
     await this.createdWebView();
   }
 
   private async createdWebView() {
-    await this._jsonManagerProvider.init();
-
     this._panel = vscode.window.createWebviewPanel(
       "i18n-manager-panel",
       "i18n Manager",
@@ -41,17 +40,24 @@ export class TableManager {
     this._eventPublishProvider = new EventPublishProvider(this._panel);
 
     this._panel.webview.html = this.getTemplate();
+    this._panel.onDidDispose(async () => {
+      await this._jsonManagerProvider.closedDb();
+    });
   }
 
-  loadData() {
+  async loadData() {
     this._eventPublishProvider?.refreshDataPublish(
-      this._jsonManagerProvider.filterAndPaginate([])
+      await this._jsonManagerProvider.filterAndPaginate([])
     );
   }
 
-  filterAndPaginate({ filter, page, size }: IBasicFilterAndPaginationEvent) {
+  async filterAndPaginate({
+    filter,
+    page,
+    size,
+  }: IBasicFilterAndPaginationEvent) {
     this._eventPublishProvider?.refreshDataPublish(
-      this._jsonManagerProvider.filterAndPaginate(filter, page, size)
+      await this._jsonManagerProvider.filterAndPaginate(filter, page, size)
     );
   }
 

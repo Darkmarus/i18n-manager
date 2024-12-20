@@ -1,4 +1,4 @@
-import type { TableManager } from "@main/controller/table-manager";
+import type { TableManager } from "../controller/table-manager";
 import * as vscode from "vscode";
 
 enum EventsListener {

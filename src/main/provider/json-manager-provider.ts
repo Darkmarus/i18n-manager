@@ -1,20 +1,28 @@
-import type { Language } from "@main/model/language.interface";
-import type { IPagination } from "@main/model/pagination.interface";
-import { VscodeUtil } from "@main/util/vscode-util";
 import * as fs from "fs";
 import * as vscode from "vscode";
-import { IProperty } from "./../model/pagination.interface";
+import type { Language } from "../model/language.interface";
+import { LanguageEntityManager } from "../persistence/language-entity-manager";
+import { VscodeUtil } from "../util/vscode-util";
+import { IProperty, type IPagination } from "./../model/pagination.interface";
+import { DatabaseProvider } from "./database-provider";
 
 export class JsonManagerProvider {
   private readonly _languages: Language[] = [];
   private _flags: any;
   private _languageDefault = -1;
   constructor(
-    private readonly _context: vscode.ExtensionContext,
-    private readonly _files: vscode.Uri[]
+    private readonly _files: vscode.Uri[],
+    private readonly _databaseProvider: DatabaseProvider,
+    private readonly _languageEntityManager: LanguageEntityManager
   ) {}
 
   async init() {
+    await this._databaseProvider.exec(`
+      CREATE TABLE IF NOT EXISTS language (
+        id        INTEGER PRIMARY KEY,
+        data      TEXT    NOT NULL,
+        lang      TEXT    NOT NULL);`);
+    await this._databaseProvider.exec(`DELETE FROM language;`);
     this.loadFiles(this._files);
     await this.loadFlags();
     await this.selectedLanguage();
@@ -59,15 +67,31 @@ export class JsonManagerProvider {
 
       const filename = file.fsPath.split("\\").pop() ?? "";
       const data = JSON.parse(jsonData);
+      this.savedDataInBatch(filename, this.flattenJSON(data));
 
       this._languages.push({
         name: filename.split(".").shift() ?? "",
         filename,
         fsPath: file.fsPath,
-        data,
-        flatten: this.flattenJSON(data),
       });
     });
+  }
+
+  private savedDataInBatch(filename: string, data: IProperty[]) {
+    let currentBatch: IProperty[] = [];
+
+    for (let i = 0; i < data.length; i++) {
+      currentBatch.push(data[i]);
+      if (currentBatch.length === 20 || i === data.length - 1) {
+        this._languageEntityManager.saveAll(
+          currentBatch.map((l) => ({
+            data: JSON.stringify(l),
+            lang: filename,
+          }))
+        );
+        currentBatch = [];
+      }
+    }
   }
 
   flattenJSON(obj: any, path: string[] = []): IProperty[] {
@@ -93,36 +117,41 @@ export class JsonManagerProvider {
     return result;
   }
 
-  filterAndPaginate(filter: string[], page = 1, size = 18): IPagination {
-    const data = this._languages[this._languageDefault].flatten;
+  getLanguageDefault(): Language {
+    return this._languages[this._languageDefault];
+  }
 
-    if (!Array.isArray(data)) {
-      throw new Error("El parámetro `data` debe ser un arreglo.");
-    }
-
+  async filterAndPaginate(
+    filter: string[],
+    page = 1,
+    size = 18
+  ): Promise<IPagination> {
     if (size <= 0 || page <= 0) {
       throw new Error("Los parámetros `size` y `page` deben ser mayores a 0.");
     }
 
-    const filteredData =
-      filter.length > 0
-        ? data.filter((item) =>
-            item.path.some((part) =>
-              filter.some((f) => part.toLowerCase().includes(f.toLowerCase()))
-            )
-          )
-        : data;
+    const filteredData = await this._languageEntityManager.filterPagination(
+      filter,
+      this.getLanguageDefault().filename,
+      page,
+      size
+    );
 
-    const startIndex = (page - 1) * size;
-    const endIndex = startIndex + size;
+    const totalElements = (
+      (await this._languageEntityManager.countFilterPagination(
+        filter,
+        this.getLanguageDefault().filename
+      )) || { total: 0 }
+    ).total;
 
-    return {
-      data: filteredData.slice(startIndex, endIndex),
+    const pageData = {
+      data: filteredData.map((l) => JSON.parse(l.data)),
       page,
       size,
-      totalPages: Math.ceil(filteredData.length / size),
-      totalElements: filteredData.length,
+      totalPages: Math.ceil(totalElements / size),
+      totalElements,
     };
+    return pageData;
   }
 
   unflattenJSON(obj: any) {
@@ -157,5 +186,9 @@ export class JsonManagerProvider {
     }
 
     return str;
+  }
+
+  async closedDb() {
+    await this._databaseProvider.close();
   }
 }

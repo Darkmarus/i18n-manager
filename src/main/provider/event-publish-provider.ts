@@ -1,4 +1,4 @@
-import type { IPagination } from "@main/model/pagination.interface";
+import type { IPagination } from "../model/pagination.interface";
 import * as vscode from "vscode";
 
 enum EventsPublish {

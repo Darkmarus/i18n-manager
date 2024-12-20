@@ -1,6 +1,6 @@
-# i18n-manager README
+# i18n-manager2 README
 
-This is the README for your extension "i18n-manager". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "i18n-manager2". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
