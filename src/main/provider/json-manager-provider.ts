@@ -22,7 +22,7 @@ export class JsonManagerProvider {
         id        INTEGER PRIMARY KEY,
         data      TEXT    NOT NULL,
         lang      TEXT    NOT NULL);`);
-    await this._databaseProvider.exec(`DELETE FROM language;`);
+    // await this._databaseProvider.exec(`DELETE FROM language;`);
     this.loadFiles(this._files);
     await this.loadFlags();
     await this.selectedLanguage();
@@ -123,6 +123,7 @@ export class JsonManagerProvider {
 
   async filterAndPaginate(
     filter: string[],
+    modeOrderStrict: boolean,
     page = 1,
     size = 18
   ): Promise<IPagination> {
@@ -134,13 +135,15 @@ export class JsonManagerProvider {
       filter,
       this.getLanguageDefault().filename,
       page,
-      size
+      size,
+      modeOrderStrict
     );
 
     const totalElements = (
       (await this._languageEntityManager.countFilterPagination(
         filter,
-        this.getLanguageDefault().filename
+        this.getLanguageDefault().filename,
+        modeOrderStrict
       )) || { total: 0 }
     ).total;
 

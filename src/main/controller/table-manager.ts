@@ -47,7 +47,7 @@ export class TableManager {
 
   async loadData() {
     this._eventPublishProvider?.refreshDataPublish(
-      await this._jsonManagerProvider.filterAndPaginate([])
+      await this._jsonManagerProvider.filterAndPaginate([], false)
     );
   }
 
@@ -55,9 +55,15 @@ export class TableManager {
     filter,
     page,
     size,
+    modeOrderStrict,
   }: IBasicFilterAndPaginationEvent) {
     this._eventPublishProvider?.refreshDataPublish(
-      await this._jsonManagerProvider.filterAndPaginate(filter, page, size)
+      await this._jsonManagerProvider.filterAndPaginate(
+        filter,
+        modeOrderStrict,
+        page,
+        size
+      )
     );
   }
 

@@ -17,7 +17,7 @@ export class LanguageEntityManager {
     lang: string,
     page: number,
     pageSize: number,
-    modeOrderStrict = false
+    modeOrderStrict: boolean
   ): Promise<LanguageEntity[]> {
     const offset = (page - 1) * pageSize;
     let sql: string = "";
@@ -40,7 +40,7 @@ export class LanguageEntityManager {
   countFilterPagination(
     filter: string[],
     lang: string,
-    modeOrderStrict = false
+    modeOrderStrict: boolean
   ): Promise<{ total: number } | undefined> {
     let sql: string = "";
     let params: any[] = [];
