@@ -3,6 +3,7 @@
   import SearchIcon from "../../icons/SearchIcon.svelte";
   import Badge from "./Badge.svelte";
   import CheckInput from "./CheckInput.svelte";
+  import Selection from "./Selection.svelte";
   interface Props {
     onSearch?: (items: string[]) => void;
   }
@@ -72,6 +73,7 @@
         event.key === "Enter" && debounce(event?.target?.value, true)}
     />
   </div>
+  <Selection class="ml-4" />
   <CheckInput class="ml-4" label="Strict" />
   <CheckInput class="ml-4" label="Not Implemented" />
 </div>
