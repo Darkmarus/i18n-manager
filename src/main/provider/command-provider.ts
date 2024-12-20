@@ -3,6 +3,7 @@ import { TableManager } from "../controller/table-manager";
 import { JsonManagerProvider } from "../provider/json-manager-provider";
 import { DatabaseProvider } from "./database-provider";
 import { LanguageEntityManager } from "../persistence/language-entity-manager";
+import { TableProvider } from "./table-provider";
 
 export class CommandProvider {
   constructor(private readonly _context: vscode.ExtensionContext) {}
@@ -29,14 +30,21 @@ export class CommandProvider {
       f.fsPath.endsWith(".json")
     );
 
+    // databaseProvider,
+    //   new LanguageEntityManager(databaseProvider
+
     const databaseProvider = new DatabaseProvider();
-    const jsonManagerProvider = new JsonManagerProvider(
-      onlyJsonFiles,
+    const jsonManagerProvider = new JsonManagerProvider(onlyJsonFiles);
+    const tableProvider = new TableProvider(
       databaseProvider,
       new LanguageEntityManager(databaseProvider)
     );
 
-    const tableManager = new TableManager(this._context, jsonManagerProvider);
+    const tableManager = new TableManager(
+      this._context,
+      jsonManagerProvider,
+      tableProvider
+    );
     tableManager.init();
   }
 }

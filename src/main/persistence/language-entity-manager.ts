@@ -4,7 +4,7 @@ import type { LanguageEntity } from "./entity/language-entity.interface";
 export class LanguageEntityManager {
   constructor(private readonly _databaseProvider: DatabaseProvider) {}
 
-  saveAll(languageEntity: LanguageEntity[]) {
+  async saveAll(languageEntity: LanguageEntity[]) {
     const sql = `INSERT INTO language (data, lang) VALUES (?, ?);`;
     this._databaseProvider.runInsertBatchTransaction(
       sql,
