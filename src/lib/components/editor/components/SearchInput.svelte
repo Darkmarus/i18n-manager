@@ -2,8 +2,6 @@
   import LoadingIcon from "../../icons/LoadingIcon.svelte";
   import SearchIcon from "../../icons/SearchIcon.svelte";
   import Badge from "./Badge.svelte";
-  import CheckInput from "./CheckInput.svelte";
-  import Selection from "./Selection.svelte";
   interface Props {
     onSearch?: (items: string[]) => void;
   }
@@ -43,37 +41,32 @@
   };
 </script>
 
-<div class="flex">
-  <div class="flex-auto rounded-md ring-1 relative mb-4 py-2 pl-10">
-    {#if isLoading}
-      <LoadingIcon />
-    {:else}
-      <SearchIcon />
-    {/if}
+<div class="flex flex-auto rounded-md ring-1 relative mb-4 py-2 pl-10">
+  {#if isLoading}
+    <LoadingIcon />
+  {:else}
+    <SearchIcon />
+  {/if}
 
-    <div class="flex">
-      {#each searchedItems as sItems, index}
-        <Badge {index} text={sItems} onRemove={removeSearchedItem} />
-      {/each}
-    </div>
+  <div class="flex">
+    {#each searchedItems as sItems, index}
+      <Badge {index} text={sItems} onRemove={removeSearchedItem} />
+    {/each}
+  </div>
 
-    <!-- oninput={(event: any) => debounce(event?.target?.value)} -->
-    <input
-      class="
+  <!-- oninput={(event: any) => debounce(event?.target?.value)} -->
+  <input
+    class="
       flex-auto
       leading-6
       placeholder-slate-400
       !outline-none
       shadow-sm"
-      type="text"
-      aria-label="Filter properties"
-      placeholder="Filter properties..."
-      bind:value={text}
-      onkeydown={(event: any) =>
-        event.key === "Enter" && debounce(event?.target?.value, true)}
-    />
-  </div>
-  <Selection class="ml-4" />
-  <CheckInput class="ml-4" label="Strict" />
-  <CheckInput class="ml-4" label="Not Implemented" />
+    type="text"
+    aria-label="Filter properties"
+    placeholder="Filter properties..."
+    bind:value={text}
+    onkeydown={(event: any) =>
+      event.key === "Enter" && debounce(event?.target?.value, true)}
+  />
 </div>

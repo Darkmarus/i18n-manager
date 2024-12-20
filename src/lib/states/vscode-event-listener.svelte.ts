@@ -1,9 +1,11 @@
+import type { ILanguage } from "../models/language.interface";
 import type { IPagination } from "../models/pagination.interface";
 import { tableProvider } from "./table-provider.svelte";
 
 class VscodeEventListener {
   private readonly _events: { [key: string]: (data: any) => void } = {
     "refresh-table": this.updateDataTable.bind(this),
+    "load-languages": this.loadLanguages.bind(this),
   };
 
   listeningEvents() {
@@ -21,6 +23,10 @@ class VscodeEventListener {
 
   private updateDataTable(page: IPagination) {
     tableProvider.data = page;
+  }
+
+  private loadLanguages(data: ILanguage[]) {
+    tableProvider.languages = data;
   }
 }
 
