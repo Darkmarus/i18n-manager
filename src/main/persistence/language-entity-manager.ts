@@ -33,7 +33,6 @@ export class LanguageEntityManager {
       sql = `SELECT * FROM language WHERE lang = ? LIMIT ? OFFSET ?;`;
       params = [lang, pageSize, offset];
     }
-
     return this._databaseProvider.getAll<LanguageEntity>(sql, params);
   }
 
@@ -66,7 +65,9 @@ export class LanguageEntityManager {
     if (filter.length > 0) {
       if (modeOrderStrict) {
         const valueConditions =
-          "%" + filter.map((filtro) => filtro.toUpperCase()).join(",") + "%";
+          '%"' +
+          filter.map((filtro) => filtro.toUpperCase()).join('","') +
+          '"%';
         return [
           `UPPER(json_extract(data, '$.path')) LIKE ?`,
           [valueConditions],

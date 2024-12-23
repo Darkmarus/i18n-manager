@@ -77,6 +77,9 @@ export class TableManager {
   changeLanguage(lang: number) {
     this._tableProvider.changeLanguage(lang);
   }
+  changeStrictFilterMode(data: boolean) {
+    this._tableProvider.changeStrictFilterMode(data);
+  }
 
   private getTemplate(): string {
     const template = this.resolverUri("index.html");

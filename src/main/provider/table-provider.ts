@@ -1,5 +1,5 @@
 import type { Language } from "../model/language.interface";
-import type { IPagination, IProperty } from "../model/pagination.interface";
+import type { IProperty } from "../model/pagination.interface";
 import type { LanguageEntityManager } from "../persistence/language-entity-manager";
 import type { DatabaseProvider } from "./database-provider";
 import type { EventPublishProvider } from "./event-publish-provider";
@@ -28,24 +28,34 @@ export class TableProvider {
 
   async loadedData() {
     this._eventPublishProvider?.languagesPublish(this.languages);
-    this._eventPublishProvider?.refreshDataPublish(
-      await this.filterAndPaginate(
-        this._filter,
-        this._modeOrderStrict,
-        this._page,
-        this._size
-      )
+
+    this.filterAndPaginate(
+      this._filter,
+      this._modeOrderStrict,
+      this._page,
+      this._size
     );
   }
   async changeLanguage(lang: number) {
     this._languageDefault = lang;
-    this._eventPublishProvider?.refreshDataPublish(
-      await this.filterAndPaginate(
-        this._filter,
-        this._modeOrderStrict,
-        this._page,
-        this._size
-      )
+    this._page = 1;
+
+    this.filterAndPaginate(
+      this._filter,
+      this._modeOrderStrict,
+      this._page,
+      this._size
+    );
+  }
+  changeStrictFilterMode(data: boolean) {
+    this._modeOrderStrict = data;
+    this._page = 1;
+
+    this.filterAndPaginate(
+      this._filter,
+      this._modeOrderStrict,
+      this._page,
+      this._size
     );
   }
 
@@ -71,7 +81,7 @@ export class TableProvider {
     modeOrderStrict: boolean,
     page: number,
     size: number
-  ): Promise<IPagination> {
+  ) {
     if (size <= 0 || page <= 0) {
       throw new Error("Los parámetros `size` y `page` deben ser mayores a 0.");
     }
@@ -103,7 +113,7 @@ export class TableProvider {
       totalPages: Math.ceil(totalElements / size),
       totalElements,
     };
-    return pageData;
+    this._eventPublishProvider?.refreshDataPublish(pageData);
   }
 
   getLanguageDefault(): Language {
