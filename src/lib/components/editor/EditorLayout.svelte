@@ -10,9 +10,21 @@
 <div class="flex">
   <SearchInput onSearch={(filter) => tableProvider.filterTable(filter)} />
   <div class="flex">
-    <Selection languages={tableProvider.languages} class="ml-4" />
-    <CheckInput class="ml-4" label="Strict" />
-    <CheckInput class="ml-4" label="Not Implemented" />
+    <Selection
+      languages={tableProvider.languages}
+      onChange={(value: number) => tableProvider.changeLanguage(value)}
+      class="ml-4"
+    />
+    <CheckInput
+      class="ml-4"
+      label="Strict"
+      onChange={(value: boolean) => tableProvider.changeStrictFilterMode(value)}
+    />
+    <CheckInput
+      class="ml-4"
+      label="Not Implemented"
+      onChange={(value: boolean) => console.log(value)}
+    />
   </div>
 </div>
 

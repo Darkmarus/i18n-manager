@@ -46,9 +46,14 @@
   };
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <table
-  class="text-left w-full border-1 border-slate-100 mb-5 rounded"
+  class="text-left w-full border-1 border-gray-400 order-slate-500 focus:border-slate-100 mb-5 rounded !outline-none"
   bind:this={tableElement}
+  tabindex="0"
+  onkeydown={handleKeyNavigation}
+  onclick={handleClickOutTable}
 >
   <thead class="bg-blue-500 flex text-white w-full">
     <tr class="flex w-full">
@@ -98,8 +103,6 @@
     {/if}
   </tbody>
 </table>
-
-<svelte:window onkeydown={handleKeyNavigation} onclick={handleClickOutTable} />
 
 <style>
   .row-selected {

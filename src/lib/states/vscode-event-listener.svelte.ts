@@ -11,6 +11,11 @@ class VscodeEventListener {
   listeningEvents() {
     window.addEventListener("message", (event) => {
       const message: { command: string; data: any } = event.data;
+      console.log(
+        "🚀 ~ VscodeEventListener ~ window.addEventListener ~ command: string; data: any:",
+        message.command,
+        message.data
+      );
       const func = this._events[message.command];
 
       if (!func) {

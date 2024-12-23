@@ -52,6 +52,14 @@ class TableProvider {
   private publishChangeTableEvent(data: IBasicFilterAndPaginationEvent) {
     vscodeEventPublisher.sendChangePageEvent(data);
   }
+
+  public changeLanguage(data: number) {
+    vscodeEventPublisher.changeLanguage(data);
+  }
+  public changeStrictFilterMode(data: boolean) {
+    this.modeOrderStrict = data;
+    vscodeEventPublisher.changeStrictFilterMode(data);
+  }
 }
 
 export const tableProvider = new TableProvider();
