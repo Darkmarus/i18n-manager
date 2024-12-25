@@ -3,15 +3,15 @@
   import SearchIcon from "../../icons/SearchIcon.svelte";
   import Badge from "./Badge.svelte";
   interface Props {
+    searchedItems: string[];
     onSearch?: (items: string[]) => void;
   }
 
-  let { onSearch }: Props = $props();
+  let { onSearch, searchedItems }: Props = $props();
 
   let timer: any;
   let text = $state("");
   let isLoading = $state(false);
-  let searchedItems = $state<string[]>([]);
 
   const addSearchedItem = () => {
     if (!text) return;

@@ -68,15 +68,24 @@
     style="height: calc( 100vh - 250px );"
   >
     {#if page}
-      {#each page.data as item, index}
+      {#each page.data as item, rowIndex}
         <tr
           class="flex w-full py-2 hover:bg-white/10"
-          class:row-selected={indexSelected === index}
-          onclick={() => (indexSelected = index)}
+          class:row-selected={indexSelected === rowIndex}
+          onclick={() => (indexSelected = rowIndex)}
         >
           <td class="w-6/12 pl-2">
-            {#each item.path as p, index}
-              <Badge {index} text={p} />
+            {#each item.path as p, tagIndex}
+              <Badge
+                index={tagIndex}
+                text={p}
+                dataAttribute={JSON.stringify({
+                  webviewSection: "filter-tag",
+                  preventDefaultContextMenuItems: true,
+                  rowIndex,
+                  tagIndex,
+                })}
+              />
             {/each}
           </td>
           <td class="w-1/12 flex justify-center">

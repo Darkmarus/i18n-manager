@@ -8,7 +8,10 @@
 </script>
 
 <div class="flex">
-  <SearchInput onSearch={(filter) => tableProvider.filterTable(filter)} />
+  <SearchInput
+    searchedItems={tableProvider.filter}
+    onSearch={(filter) => tableProvider.filterTable(filter)}
+  />
   <div class="flex">
     <Selection
       languages={tableProvider.languages}

@@ -3,13 +3,15 @@
     index: number;
     text: string;
     onRemove?: (index: number) => void;
+    dataAttribute?: any;
   }
-  let { index, text, onRemove }: Props = $props();
+  let { index, text, onRemove, dataAttribute }: Props = $props();
 </script>
 
 <span
   class="mr-2 px-2.5 py-0.5 rounded bg-gray-700 text-gray-300 select-none"
   class:cursor-pointer={!onRemove}
+  data-vscode-context='{dataAttribute}'
 >
   {text}
 
