@@ -5,7 +5,7 @@ export class DatabaseProvider {
   private _db?: sqlite3.Database;
   private async open(): Promise<void> {
     this._db = new sqlite3.Database(
-      "D:/project/omar/vscode_plugin/i18n-manager/i18n-manager/i18n-manager.db",
+      "D:/project/plugin-vscode/i18n-project/i18n-manager/i18n-manager.db",
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
       (err) => {
         if (err) {

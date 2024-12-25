@@ -133,4 +133,11 @@ export class TableProvider {
   setEventPublishProvider(eventPublishProvider: EventPublishProvider) {
     this._eventPublishProvider = eventPublishProvider;
   }
+
+  filterSingle(rowIndex: number, tagIndex: number) {
+    this._eventPublishProvider?.filterSinglePublish(rowIndex, tagIndex);
+  }
+  filterTags(rowIndex: number, tagIndex: number) {
+    this._eventPublishProvider?.filterTagsPublish(rowIndex, tagIndex);
+  }
 }

@@ -15,16 +15,34 @@
     "menus": {
       "explorer/context": [
         {
-          "command": "i18n-manager.openManagerWIthSelection",
+          "command": "i18n-manager-43A78A5B43B33AD8.openManagerWIthSelection",
           "group": "navigation",
           "when": "resourceLangId == json"
+        }
+      ],
+      "webview/context": [
+        {
+          "command": "i18n-manager-43A78A5B43B33AD8.filterSingleTag",
+          "when": "webviewId == 'i18n-manager-43A78A5B43B33AD8' && webviewSection == 'filter-tag'"
+        },
+        {
+          "command": "i18n-manager-43A78A5B43B33AD8.filterAllTags",
+          "when": "webviewId == 'i18n-manager-43A78A5B43B33AD8' && webviewSection == 'filter-tag'"
         }
       ]
     },
     "commands": [
       {
-        "command": "i18n-manager.openManagerWIthSelection",
+        "command": "i18n-manager-43A78A5B43B33AD8.openManagerWIthSelection",
         "title": "Open with i18n Manager"
+      },
+      {
+        "command": "i18n-manager-43A78A5B43B33AD8.filterSingleTag",
+        "title": "Filter single tag"
+      },
+      {
+        "command": "i18n-manager-43A78A5B43B33AD8.filterAllTags",
+        "title": "Filter tags to here"
       }
     ],
     "configuration": {

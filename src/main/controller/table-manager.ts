@@ -11,14 +11,15 @@ import { VscodeUtil } from "../util/vscode-util";
 export class TableManager {
   private _panel?: vscode.WebviewPanel;
   private _eventListenerProvider?: EventListenerProvider;
+  public onClosed?: () => void;
 
   constructor(
     private readonly _context: vscode.ExtensionContext,
     private readonly _jsonManagerProvider: JsonManagerProvider,
-    private readonly _tableProvider: TableProvider
+    public readonly _tableProvider: TableProvider
   ) {}
 
-  async init() {
+  async init(viewId: string) {
     await this._tableProvider.init();
     const files = await this._jsonManagerProvider.loadFiles();
 
@@ -34,12 +35,12 @@ export class TableManager {
 
       await Promise.all(promises);
     }
-    await this.createdWebView();
+    await this.createdWebView(viewId);
   }
 
-  private async createdWebView() {
+  private async createdWebView(viewId: string) {
     this._panel = vscode.window.createWebviewPanel(
-      "i18n-manager-panel",
+      viewId,
       "i18n Manager",
       vscode.ViewColumn.One,
       {
@@ -56,13 +57,22 @@ export class TableManager {
     );
 
     this._panel.webview.html = this.getTemplate();
-    this._panel.onDidDispose(async () => {
-      await this._tableProvider.closedDb();
+    this._panel.onDidDispose(() => {
+      this.onClosed?.();
+      this._tableProvider.closedDb();
     });
   }
 
   loadData() {
     this._tableProvider.loadedData();
+  }
+
+  activeView() {
+    const columnToShowIn = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.viewColumn
+      : undefined;
+
+    this._panel?.reveal(columnToShowIn);
   }
 
   filterAndPaginate({
