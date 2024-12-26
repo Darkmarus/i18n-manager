@@ -5,11 +5,11 @@ import { vscodeEventPublisher } from "./vscode-event-publish.svelte";
 
 class TableProvider {
   data = $state.raw<IPagination | undefined>();
-  filter = $state.raw<string[]>([]);
-  modeOrderStrict = $state.raw<boolean>(false);
+  filter = $state<string[]>([]);
+  modeOrderStrict = $state<boolean>(false);
   languages = $state.raw<ILanguage[]>([]);
 
-  filterTable(filter: string[]) {
+  changeFilter(filter: string[]) {
     this.filter = filter;
     const data = {
       filter: [...filter],

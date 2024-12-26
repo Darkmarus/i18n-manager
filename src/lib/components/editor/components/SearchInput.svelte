@@ -7,7 +7,7 @@
     onSearch?: (items: string[]) => void;
   }
 
-  let { onSearch, searchedItems }: Props = $props();
+  let { onSearch, searchedItems = $bindable() }: Props = $props();
 
   let timer: any;
   let text = $state("");

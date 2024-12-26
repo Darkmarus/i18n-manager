@@ -10,7 +10,7 @@
 <div class="flex">
   <SearchInput
     searchedItems={tableProvider.filter}
-    onSearch={(filter) => tableProvider.filterTable(filter)}
+    onSearch={(filter) => tableProvider.changeFilter(filter)}
   />
   <div class="flex">
     <Selection
@@ -21,6 +21,7 @@
     <CheckInput
       class="ml-4"
       label="Strict"
+      checked={tableProvider.modeOrderStrict}
       onChange={(value: boolean) => tableProvider.changeStrictFilterMode(value)}
     />
     <CheckInput

@@ -40,8 +40,8 @@ class VscodeEventListener {
     const item = tableProvider.data?.data[rowIndex];
     if (item) {
       const tag = item.path[tagIndex];
-      tableProvider.filterTable([tag]);
       tableProvider.modeOrderStrict = false;
+      tableProvider.changeFilter([tag]);
     }
   }
   private changeTagsFilter(data: { rowIndex: number; tagIndex: number }) {
@@ -49,8 +49,8 @@ class VscodeEventListener {
     const item = tableProvider.data?.data[rowIndex];
     if (item) {
       const tags = item.path.slice(0, tagIndex + 1);
-      tableProvider.filterTable(tags);
       tableProvider.modeOrderStrict = true;
+      tableProvider.changeFilter(tags);
     }
   }
 }

@@ -2,10 +2,11 @@
   interface Props {
     label: string;
     class?: string;
+    checked?: boolean;
     onChange?: (value: boolean) => void;
   }
-  let { label, class: className, onChange } = $props();
-  let checked = $state(false);
+  let { label, class: className, onChange, checked = $bindable() } = $props();
+
   const id = newUUID();
   function newUUID(): string {
     let Id = "",
@@ -30,7 +31,10 @@
     type="checkbox"
     bind:checked
     class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-blue-600 checked:border-blue-600"
-    onchange={(event: any) => onChange && onChange(event.target.checked)}
+    onclick={() => {
+      checked = !checked;
+      onChange && onChange(checked);
+    }}
   />
   <label for="checkbox-{id}" class="ml-1 font-norma cursor-pointer select-none"
     >{label}</label
