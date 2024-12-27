@@ -79,18 +79,19 @@ export class TableManager {
     filter,
     page,
     size,
-    modeOrderStrict,
+    strictFilter,
   }: IBasicFilterAndPaginationEvent) {
-    this._tableProvider.filterAndPaginate(filter, modeOrderStrict, page, size);
+    this._tableProvider.filterAndPaginate(filter, strictFilter, page, size);
   }
-
   changeLanguage(lang: number) {
     this._tableProvider.changeLanguage(lang);
   }
-  changeStrictFilterMode(data: boolean) {
-    this._tableProvider.changeStrictFilterMode(data);
+  changeStrictFilter(data: boolean) {
+    this._tableProvider.changeStrictFilter(data);
   }
-
+  changePropertiesImplemented(data: boolean) {
+    this._tableProvider.changeMissingFilter(data);
+  }
   private getTemplate(): string {
     const template = this.resolverUri("index.html");
 

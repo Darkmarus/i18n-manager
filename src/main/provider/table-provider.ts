@@ -7,7 +7,8 @@ import type { EventPublishProvider } from "./event-publish-provider";
 export class TableProvider {
   private readonly _languages: Language[] = [];
   private _languageDefault = 0;
-  private _modeOrderStrict: boolean = false;
+  private _strictFilter: boolean = false;
+  private _missingFilter: boolean = false;
   private _page: number = 1;
   private _size: number = 18;
   private _filter: string[] = [];
@@ -31,32 +32,22 @@ export class TableProvider {
 
     this.filterAndPaginate(
       this._filter,
-      this._modeOrderStrict,
+      this._strictFilter,
       this._page,
       this._size
     );
   }
   async changeLanguage(lang: number) {
     this._languageDefault = lang;
-    this._page = 1;
 
-    this.filterAndPaginate(
-      this._filter,
-      this._modeOrderStrict,
-      this._page,
-      this._size
-    );
+    this.filterAndPaginate(this._filter, this._strictFilter, 1, this._size);
   }
-  changeStrictFilterMode(data: boolean) {
-    this._modeOrderStrict = data;
-    this._page = 1;
-
-    this.filterAndPaginate(
-      this._filter,
-      this._modeOrderStrict,
-      this._page,
-      this._size
-    );
+  changeStrictFilter(strictFilterMode: boolean) {
+    this.filterAndPaginate(this._filter, strictFilterMode, 1, this._size);
+  }
+  changeMissingFilter(data: boolean) {
+    this._missingFilter = data;
+    this.filterAndPaginate(this._filter, this._strictFilter, 1, this._size);
   }
 
   async savedDataInBatch(filename: string, data: IProperty[]) {
@@ -78,7 +69,7 @@ export class TableProvider {
 
   async filterAndPaginate(
     filter: string[],
-    modeOrderStrict: boolean,
+    strictFilter: boolean,
     page: number,
     size: number
   ) {
@@ -86,28 +77,32 @@ export class TableProvider {
       throw new Error("Los parámetros `size` y `page` deben ser mayores a 0.");
     }
     this._filter = filter;
-    this._modeOrderStrict = modeOrderStrict;
+    this._strictFilter = strictFilter;
     this._size = size;
     this._page = page;
 
     const filteredData = await this._languageEntityManager.filterPagination(
-      filter,
+      this._filter,
+      this.languages.length,
       this.getLanguageDefault().filename,
-      page,
-      size,
-      modeOrderStrict
+      this._page,
+      this._size,
+      this._strictFilter,
+      this._missingFilter
     );
 
     const totalElements = (
       (await this._languageEntityManager.countFilterPagination(
-        filter,
+        this._filter,
+        this.languages.length,
         this.getLanguageDefault().filename,
-        modeOrderStrict
+        this._strictFilter,
+        this._missingFilter
       )) || { total: 0 }
     ).total;
 
     const pageData = {
-      data: filteredData.map((l) => JSON.parse(l.data)),
+      data: filteredData.map((l) => ({ id: l.id, ...JSON.parse(l.data) })),
       page,
       size,
       totalPages: Math.ceil(totalElements / size),

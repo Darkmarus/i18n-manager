@@ -5,7 +5,8 @@ enum EventsListener {
   LOADED = "loaded",
   CHANGE_PAGE_AND_FIlTER = "change-page-filter",
   CHANGE_LANGUAGE = "change-language",
-  CHANGE_STRICT_FILTER_MODE = "change-strict-filter-mode",
+  CHANGE_STRICT_FILTER = "change-strict-filter",
+  CHANGE_MISSING_FILTER = "change-missing-filter",
 }
 
 export class EventListenerProvider {
@@ -29,8 +30,11 @@ export class EventListenerProvider {
         case EventsListener.CHANGE_LANGUAGE:
           this._tableManager.changeLanguage(message.data);
           break;
-        case EventsListener.CHANGE_STRICT_FILTER_MODE:
-          this._tableManager.changeStrictFilterMode(message.data);
+        case EventsListener.CHANGE_STRICT_FILTER:
+          this._tableManager.changeStrictFilter(message.data);
+          break;
+        case EventsListener.CHANGE_MISSING_FILTER:
+          this._tableManager.changePropertiesImplemented(message.data);
           break;
         default:
           console.log("Event not found", message.type);
