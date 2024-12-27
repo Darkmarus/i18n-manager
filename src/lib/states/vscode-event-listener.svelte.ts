@@ -29,7 +29,7 @@ class VscodeEventListener {
   }
 
   private updateDataTable(page: IPagination) {
-    tableProvider.data = page;
+    tableProvider.pagination = page;
   }
 
   private loadLanguages(data: ILanguage[]) {
@@ -37,19 +37,19 @@ class VscodeEventListener {
   }
   private changeSingleFilter(data: { rowIndex: number; tagIndex: number }) {
     const { rowIndex, tagIndex } = data;
-    const item = tableProvider.data?.data[rowIndex];
+    const item = tableProvider.pagination?.data[rowIndex];
     if (item) {
       const tag = item.path[tagIndex];
-      tableProvider.modeOrderStrict = false;
+      tableProvider.strictFilter = false;
       tableProvider.changeFilter([tag]);
     }
   }
   private changeTagsFilter(data: { rowIndex: number; tagIndex: number }) {
     const { rowIndex, tagIndex } = data;
-    const item = tableProvider.data?.data[rowIndex];
+    const item = tableProvider.pagination?.data[rowIndex];
     if (item) {
       const tags = item.path.slice(0, tagIndex + 1);
-      tableProvider.modeOrderStrict = true;
+      tableProvider.strictFilter = true;
       tableProvider.changeFilter(tags);
     }
   }

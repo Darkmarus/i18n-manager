@@ -4,9 +4,10 @@ import type { IPagination } from "../models/pagination.interface";
 import { vscodeEventPublisher } from "./vscode-event-publish.svelte";
 
 class TableProvider {
-  data = $state.raw<IPagination | undefined>();
+  pagination = $state.raw<IPagination | undefined>();
   filter = $state<string[]>([]);
-  modeOrderStrict = $state<boolean>(false);
+  strictFilter = $state<boolean>(false);
+  missingFilter = $state<boolean>(false);
   languages = $state.raw<ILanguage[]>([]);
 
   changeFilter(filter: string[]) {
@@ -14,28 +15,28 @@ class TableProvider {
     const data = {
       filter: [...filter],
       page: 1,
-      size: this.data?.size || 10,
-      modeOrderStrict: this.modeOrderStrict,
+      size: this.pagination?.size ?? 10,
+      strictFilter: this.strictFilter,
     };
     this.publishChangeTableEvent(data);
   }
 
   nextPage() {
     const data = {
-      page: (this.data?.page || 0) + 1,
-      size: this.data?.size || 10,
+      page: (this.pagination?.page ?? 0) + 1,
+      size: this.pagination?.size ?? 10,
       filter: [...this.filter],
-      modeOrderStrict: this.modeOrderStrict,
+      strictFilter: this.strictFilter,
     };
     this.publishChangeTableEvent(data);
   }
 
   prevPage() {
     const data = {
-      page: (this.data?.page || 0) - 1,
-      size: this.data?.size || 10,
+      page: (this.pagination?.page ?? 0) - 1,
+      size: this.pagination?.size ?? 10,
       filter: [...this.filter],
-      modeOrderStrict: this.modeOrderStrict,
+      strictFilter: this.strictFilter,
     };
     this.publishChangeTableEvent(data);
   }
@@ -43,9 +44,9 @@ class TableProvider {
   changePage(page: number) {
     const data = {
       page,
-      size: this.data?.size || 10,
+      size: this.pagination?.size ?? 10,
       filter: [...this.filter],
-      modeOrderStrict: this.modeOrderStrict,
+      strictFilter: this.strictFilter,
     };
     this.publishChangeTableEvent(data);
   }
@@ -56,9 +57,13 @@ class TableProvider {
   public changeLanguage(data: number) {
     vscodeEventPublisher.changeLanguage(data);
   }
-  public changeStrictFilterMode(data: boolean) {
-    this.modeOrderStrict = data;
-    vscodeEventPublisher.changeStrictFilterMode(data);
+  public changeStrictFilter(data: boolean) {
+    this.strictFilter = data;
+    vscodeEventPublisher.changeStrictFilter(data);
+  }
+  public changeMissingFilter(data: boolean) {
+    this.missingFilter = data;
+    vscodeEventPublisher.changeMissingFilter(data);
   }
 }
 

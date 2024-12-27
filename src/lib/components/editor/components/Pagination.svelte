@@ -12,12 +12,12 @@
 
   const pages = $derived.by(() => {
     const pages: any[] = [];
-    if (tableProvider.data === undefined) {
+    if (tableProvider.pagination === undefined) {
       return pages;
     }
 
-    const currentPage = tableProvider.data.page;
-    const totalPages = tableProvider.data.totalPages;
+    const currentPage = tableProvider.pagination.page;
+    const totalPages = tableProvider.pagination.totalPages;
 
     if (totalPages <= 5) {
       for (let i = 1; i <= totalPages; i++) {
@@ -46,14 +46,15 @@
 
 <div class="flex items-center justify-center">
   <div class="flex space-x-1">
-    <Button disabled={tableProvider?.data?.page === 1} onclick={onPrevPage}
-      >Prev</Button
+    <Button
+      disabled={tableProvider?.pagination?.page === 1}
+      onclick={onPrevPage}>Prev</Button
     >
 
     <div class="flex justify-center min-w-96">
       {#each pages as p}
         <Button
-          active={p === tableProvider?.data?.page}
+          active={p === tableProvider?.pagination?.page}
           disabled={p === "..."}
           onclick={() => onChangePage(p)}>{p}</Button
         >
@@ -61,7 +62,8 @@
     </div>
 
     <Button
-      disabled={tableProvider?.data?.page === tableProvider?.data?.totalPages}
+      disabled={tableProvider?.pagination?.page ===
+        tableProvider?.pagination?.totalPages}
       onclick={onNextPage}>Next</Button
     >
   </div>

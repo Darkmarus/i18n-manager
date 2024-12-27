@@ -4,7 +4,8 @@ enum eventPublish {
   LOADED = "loaded",
   CHANGE_PAGE_AND_FIlTER = "change-page-filter",
   CHANGE_LANGUAGE = "change-language",
-  CHANGE_STRICT_FILTER_MODE = "change-strict-filter-mode",
+  CHANGE_STRICT_FILTER = "change-strict-filter",
+  CHANGE_MISSING_FILTER = "change-missing-filter",
 }
 class VscodeEventPublisher {
   private readonly _vscode = acquireVsCodeApi();
@@ -27,9 +28,16 @@ class VscodeEventPublisher {
     });
   }
 
-  changeStrictFilterMode(data: boolean) {
+  changeStrictFilter(data: boolean) {
     this._vscode.postMessage({
-      type: eventPublish.CHANGE_STRICT_FILTER_MODE,
+      type: eventPublish.CHANGE_STRICT_FILTER,
+      data,
+    });
+  }
+
+  changeMissingFilter(data: boolean) {
+    this._vscode.postMessage({
+      type: eventPublish.CHANGE_MISSING_FILTER,
       data,
     });
   }

@@ -3,9 +3,9 @@
     label: string;
     class?: string;
     checked?: boolean;
-    onChange?: (value: boolean) => void;
+    onClick?: (value: boolean) => void;
   }
-  let { label, class: className, onChange, checked = $bindable() } = $props();
+  let { label, class: className, onClick, checked = $bindable() } = $props();
 
   const id = newUUID();
   function newUUID(): string {
@@ -33,7 +33,7 @@
     class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-blue-600 checked:border-blue-600"
     onclick={() => {
       checked = !checked;
-      onChange && onChange(checked);
+      onClick && onClick(checked);
     }}
   />
   <label for="checkbox-{id}" class="ml-1 font-norma cursor-pointer select-none"
@@ -44,7 +44,7 @@
     class="absolute text-white opacity-0 peer-checked:opacity-100 top-5 left-2.5 cursor-pointer transform -translate-x-1/2 -translate-y-1/2"
     onclick={() => {
       checked = !checked;
-      onChange && onChange(checked);
+      onClick && onClick(checked);
     }}
   >
     <svg

@@ -21,18 +21,19 @@
     <CheckInput
       class="ml-4"
       label="Strict"
-      checked={tableProvider.modeOrderStrict}
-      onChange={(value: boolean) => tableProvider.changeStrictFilterMode(value)}
+      checked={tableProvider.strictFilter}
+      onClick={(value: boolean) => tableProvider.changeStrictFilter(value)}
     />
     <CheckInput
       class="ml-4"
-      label="Not Implemented"
-      onChange={(value: boolean) => console.log(value)}
+      label="Missing"
+      checked={tableProvider.missingFilter}
+      onClick={(value: boolean) => tableProvider.changeMissingFilter(value)}
     />
   </div>
 </div>
 
-<Table page={tableProvider.data} />
+<Table page={tableProvider.pagination} />
 
 <Pagination
   onChangePage={(page) => {
