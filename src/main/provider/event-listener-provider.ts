@@ -7,6 +7,7 @@ enum EventsListener {
   CHANGE_LANGUAGE = "change-language",
   CHANGE_STRICT_FILTER = "change-strict-filter",
   CHANGE_MISSING_FILTER = "change-missing-filter",
+  DELETE_PROPERTY = "delete-property",
 }
 
 export class EventListenerProvider {
@@ -35,6 +36,12 @@ export class EventListenerProvider {
           break;
         case EventsListener.CHANGE_MISSING_FILTER:
           this._tableManager.changePropertiesImplemented(message.data);
+          break;
+        case EventsListener.DELETE_PROPERTY:
+          this._tableManager.deleteProperty(
+            message.id,
+            message.page
+          );
           break;
         default:
           console.log("Event not found", message.type);

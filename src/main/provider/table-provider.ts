@@ -23,7 +23,8 @@ export class TableProvider {
         CREATE TABLE IF NOT EXISTS language (
           id        INTEGER PRIMARY KEY,
           data      TEXT    NOT NULL,
-          lang      TEXT    NOT NULL);`);
+          lang      TEXT    NOT NULL,
+          deleted   BOOLEAN NOT NULL DEFAULT 0);`);
     await this._databaseProvider.exec(`DELETE FROM language;`);
   }
 
@@ -48,6 +49,15 @@ export class TableProvider {
   changeMissingFilter(data: boolean) {
     this._missingFilter = data;
     this.filterAndPaginate(this._filter, this._strictFilter, 1, this._size);
+  }
+  async deleteProperty(id: number, page: number) {
+    await this._languageEntityManager.delete(id);
+    await this.filterAndPaginate(
+      this._filter,
+      this._strictFilter,
+      page,
+      this._size
+    );
   }
 
   async savedDataInBatch(filename: string, data: IProperty[]) {

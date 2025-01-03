@@ -92,6 +92,9 @@ export class TableManager {
   changePropertiesImplemented(data: boolean) {
     this._tableProvider.changeMissingFilter(data);
   }
+  deleteProperty(id: number, page:number) {
+    this._tableProvider.deleteProperty(id, page);
+  }
   private getTemplate(): string {
     const template = this.resolverUri("index.html");
 

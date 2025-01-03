@@ -11,6 +11,10 @@ export class LanguageEntityManager {
       languageEntity.map((l) => [l.data, l.lang])
     );
   }
+  async delete(id: number) {
+    const sql = `UPDATE language SET deleted = 1 WHERE id = ?;`;
+    await this._databaseProvider.run(sql, [id]);
+  }
 
   filterPagination(
     filter: string[],
@@ -33,10 +37,10 @@ export class LanguageEntityManager {
         filter,
         modeOrderStrict
       );
-      sql = `SELECT * FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} LIMIT ? OFFSET ?;`;
+      sql = `SELECT * FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND deleted = 0 LIMIT ? OFFSET ?;`;
       params = [...valueConditions, lang, pageSize, offset];
     } else {
-      sql = `SELECT * FROM language WHERE lang = ? ${conditionsFilterImplemented} LIMIT ? OFFSET ?;`;
+      sql = `SELECT * FROM language WHERE lang = ? ${conditionsFilterImplemented} AND deleted = 0 LIMIT ? OFFSET ?;`;
       params = [lang, pageSize, offset];
     }
     return this._databaseProvider.getAll<LanguageEntity>(sql, params);
@@ -60,10 +64,10 @@ export class LanguageEntityManager {
         filter,
         modeOrderStrict
       );
-      sql = `SELECT COUNT(*) AS total FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented};`;
+      sql = `SELECT COUNT(*) AS total FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND deleted = 0;`;
       params = [...valueConditions, lang];
     } else {
-      sql = `SELECT COUNT(*) AS total FROM language WHERE lang = ? ${conditionsFilterImplemented};`;
+      sql = `SELECT COUNT(*) AS total FROM language WHERE lang = ? ${conditionsFilterImplemented} AND deleted = 0;`;
       params = [lang];
     }
 
