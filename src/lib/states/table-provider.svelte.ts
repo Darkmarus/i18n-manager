@@ -65,6 +65,13 @@ class TableProvider {
     this.missingFilter = data;
     vscodeEventPublisher.changeMissingFilter(data);
   }
+  public deleteProperty(id: number) {
+    let page = this.pagination?.page ?? 1;
+    if (this.pagination?.data.length === 1 && this.pagination?.page > 1) {
+      page = this.pagination?.page - 1;
+    }
+    vscodeEventPublisher.deleteProperty(id, page);
+  }
 }
 
 export const tableProvider = new TableProvider();

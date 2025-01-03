@@ -6,6 +6,7 @@ enum eventPublish {
   CHANGE_LANGUAGE = "change-language",
   CHANGE_STRICT_FILTER = "change-strict-filter",
   CHANGE_MISSING_FILTER = "change-missing-filter",
+  DELETE_PROPERTY = "delete-property",
 }
 class VscodeEventPublisher {
   private readonly _vscode = acquireVsCodeApi();
@@ -39,6 +40,14 @@ class VscodeEventPublisher {
     this._vscode.postMessage({
       type: eventPublish.CHANGE_MISSING_FILTER,
       data,
+    });
+  }
+
+  deleteProperty(id: number, page: number) {
+    this._vscode.postMessage({
+      type: eventPublish.DELETE_PROPERTY,
+      id,
+      page,
     });
   }
 }

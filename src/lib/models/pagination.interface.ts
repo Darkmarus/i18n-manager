@@ -1,4 +1,5 @@
 export interface IProperty {
+  id: number;
   path: string[];
   value: any;
 }

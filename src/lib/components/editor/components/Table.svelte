@@ -1,7 +1,13 @@
 <script lang="ts">
-  import type { IPagination } from "../../../models/pagination.interface";
+  import type {
+    IPagination,
+    IProperty,
+  } from "../../../models/pagination.interface";
+  import { modalProvider } from "../../../states/modal-provider.svelte";
+  import { tableProvider } from "../../../states/table-provider.svelte";
   import JsonEditIcon from "../../icons/JsonEditIcon.svelte";
   import TrashIcon from "../../icons/TrashIcon.svelte";
+  import AlertDeletePropertyModal from "../../modals/template/AlertDeletePropertyModal.svelte";
   import Badge from "./Badge.svelte";
 
   interface Props {
@@ -42,6 +48,13 @@
   const handleClickOutTable = (event: any) => {
     if (!tableElement.contains(event.target)) {
       indexSelected = -1;
+    }
+  };
+
+  const handleDeleteItem = async (item: IProperty) => {
+    const isConfirmed = await modalProvider.new(AlertDeletePropertyModal, item);
+    if (isConfirmed) {
+      tableProvider.deleteProperty(item.id);
     }
   };
 </script>
@@ -103,9 +116,14 @@
               <JsonEditIcon />
             </div>
 
-            <div class="cursor-pointer ml-2">
+            <button
+              type="button"
+              class="cursor-pointer ml-2"
+              onclick={() => handleDeleteItem(item)}
+              aria-label="Delete"
+            >
               <TrashIcon />
-            </div>
+            </button>
           </td>
         </tr>
       {/each}
