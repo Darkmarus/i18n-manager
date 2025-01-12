@@ -8,6 +8,7 @@
   import JsonEditIcon from "../../icons/JsonEditIcon.svelte";
   import TrashIcon from "../../icons/TrashIcon.svelte";
   import AlertDeletePropertyModal from "../../modals/template/AlertDeletePropertyModal.svelte";
+  import EditPropertyModal from "../../modals/template/EditPropertyModal.svelte";
   import Badge from "./Badge.svelte";
 
   interface Props {
@@ -56,6 +57,10 @@
     if (isConfirmed) {
       tableProvider.deleteProperty(item.id);
     }
+  };
+
+  const handleEditItem = async (item: IProperty) => {
+    const data = await modalProvider.new(EditPropertyModal, item);
   };
 </script>
 
@@ -112,9 +117,14 @@
             </div>
           </td>
           <td class="w-2/12 flex justify-center">
-            <div class="cursor-pointer">
+            <button
+              type="button"
+              class="cursor-pointer"
+              onclick={() => handleEditItem(item)}
+              aria-label="Edit"
+            >
               <JsonEditIcon />
-            </div>
+            </button>
 
             <button
               type="button"

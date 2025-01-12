@@ -1,5 +1,6 @@
 import type { ILanguage } from "../models/language.interface";
 import type { IPagination } from "../models/pagination.interface";
+import { suggestionProvider } from "./suggestion-provider.svelte";
 import { tableProvider } from "./table-provider.svelte";
 
 class VscodeEventListener {
@@ -8,6 +9,7 @@ class VscodeEventListener {
     "load-languages": this.loadLanguages.bind(this),
     "filter-single": this.changeSingleFilter.bind(this),
     "filter-tags": this.changeTagsFilter.bind(this),
+    "refresh-suggestions": this.updateSuggestions.bind(this),
   };
 
   listeningEvents() {
@@ -52,6 +54,10 @@ class VscodeEventListener {
       tableProvider.strictFilter = true;
       tableProvider.changeFilter(tags);
     }
+  }
+
+  private updateSuggestions(data: string[]) {
+    suggestionProvider.data = data;
   }
 }
 

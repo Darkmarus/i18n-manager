@@ -7,6 +7,7 @@ enum eventPublish {
   CHANGE_STRICT_FILTER = "change-strict-filter",
   CHANGE_MISSING_FILTER = "change-missing-filter",
   DELETE_PROPERTY = "delete-property",
+  CHANGE_SUGGESTION = "change-suggestion",
 }
 class VscodeEventPublisher {
   private readonly _vscode = acquireVsCodeApi();
@@ -48,6 +49,13 @@ class VscodeEventPublisher {
       type: eventPublish.DELETE_PROPERTY,
       id,
       page,
+    });
+  }
+
+  changeSuggestion(text: string) {
+    this._vscode.postMessage({
+      type: eventPublish.CHANGE_SUGGESTION,
+      text,
     });
   }
 }

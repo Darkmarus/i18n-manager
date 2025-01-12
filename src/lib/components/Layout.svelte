@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Section } from "../models/section-type";
   import { tableProvider } from "../states/table-provider.svelte";
+  import Switch from "./editor/components/Switch.svelte";
   import EditorLayout from "./editor/EditorLayout.svelte";
   import ChangesLogIcon from "./icons/ChangesLogIcon.svelte";
   import JsonEditIcon from "./icons/JsonEditIcon.svelte";
@@ -28,16 +29,14 @@
   const setSectionActive = (item: Section) => {
     sectionActive = item;
   };
-  $inspect("tableProvider", tableProvider.data);
 </script>
 
-<div>
-  <div class="mt-4">
-    <nav class="ml-4 flex gap-6" aria-label="Tabs">
-      {#each sections as item}
-        <button
-          onclick={() => setSectionActive(item)}
-          class="
+<div class="flex justify-between mx-4 mt-4">
+  <nav class="flex gap-6" aria-label="Tabs">
+    {#each sections as item}
+      <button
+        onclick={() => setSectionActive(item)}
+        class="
           inline-flex
           shrink-0
           items-center
@@ -51,15 +50,17 @@
           cursor-pointer
           select-none
           {item.type === sectionActive.type
-            ? 'text-blue-500 border-blue-500'
-            : 'text-gray-500 border-transparent'}"
-        >
-          <item.component />
-          {item.label}
-        </button>
-      {/each}
-    </nav>
-  </div>
+          ? 'text-blue-500 border-blue-500'
+          : 'text-gray-500 border-transparent'}"
+      >
+        <item.component />
+        {item.label}
+      </button>
+    {/each}
+  </nav>
+  {#if sectionActive.type === "EDITOR"}
+  <Switch />
+  {/if}
 </div>
 
 <div class="m-4">

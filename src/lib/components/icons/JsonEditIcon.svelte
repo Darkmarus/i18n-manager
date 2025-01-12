@@ -1,6 +1,6 @@
 <svg
   class="size-5"
-  viewBox="0 0 24 24"
+  viewBox="0 0 24 20"
   fill="none"
   version="1.1"
   stroke="currentColor"
