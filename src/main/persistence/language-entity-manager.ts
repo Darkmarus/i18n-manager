@@ -12,7 +12,7 @@ export class LanguageEntityManager {
     );
   }
   async delete(id: number) {
-    const sql = `UPDATE language SET deleted = 1 WHERE id = ?;`;
+    const sql = `UPDATE language SET status = 'DELETED' WHERE id = ?;`;
     await this._databaseProvider.run(sql, [id]);
   }
 
@@ -37,10 +37,10 @@ export class LanguageEntityManager {
         filter,
         modeOrderStrict
       );
-      sql = `SELECT * FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND deleted = 0 LIMIT ? OFFSET ?;`;
+      sql = `SELECT * FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED' LIMIT ? OFFSET ?;`;
       params = [...valueConditions, lang, pageSize, offset];
     } else {
-      sql = `SELECT * FROM language WHERE lang = ? ${conditionsFilterImplemented} AND deleted = 0 LIMIT ? OFFSET ?;`;
+      sql = `SELECT * FROM language WHERE lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED' LIMIT ? OFFSET ?;`;
       params = [lang, pageSize, offset];
     }
     return this._databaseProvider.getAll<LanguageEntity>(sql, params);
@@ -64,13 +64,12 @@ export class LanguageEntityManager {
         filter,
         modeOrderStrict
       );
-      sql = `SELECT COUNT(*) AS total FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND deleted = 0;`;
+      sql = `SELECT COUNT(*) AS total FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED';`;
       params = [...valueConditions, lang];
     } else {
-      sql = `SELECT COUNT(*) AS total FROM language WHERE lang = ? ${conditionsFilterImplemented} AND deleted = 0;`;
+      sql = `SELECT COUNT(*) AS total FROM language WHERE lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED';`;
       params = [lang];
     }
-
     return this._databaseProvider.get<{ total: number }>(sql, params);
   }
 
@@ -94,11 +93,11 @@ export class LanguageEntityManager {
     if (filter.length > 0) {
       if (modeOrderStrict) {
         const valueConditions =
-          '%"' +
-          filter.map((filtro) => filtro.toUpperCase()).join('","') +
-          '"%';
+          '*"' +
+          filter.map((filtro) => filtro).join('","') +
+          '"*';
         return [
-          `UPPER(json_extract(data, '$.path')) LIKE ?`,
+          `json_extract(data, '$.path') GLOB ?`,
           [valueConditions],
         ];
       } else {
@@ -112,5 +111,18 @@ export class LanguageEntityManager {
       }
     }
     return ["", []];
+  }
+  async filterSuggestion(value: string, size: number): Promise<string[]> {
+    if (!value) {
+      return [];
+    }
+    const sql = `SELECT DISTINCT value FROM language, json_each( language.data, '$.path' ) WHERE value LIKE '%${
+      value || ""
+    }%' LIMIT ?;`;
+    return (
+      (
+        await this._databaseProvider.getAll<{ value: string }>(sql, [size])
+      )?.map((r) => r.value) || []
+    );
   }
 }

@@ -24,7 +24,8 @@ export class TableProvider {
           id        INTEGER PRIMARY KEY,
           data      TEXT    NOT NULL,
           lang      TEXT    NOT NULL,
-          deleted   BOOLEAN NOT NULL DEFAULT 0);`);
+          status TEXT    CHECK (status IN ("CREATED", "MODIFIED", "DELETED") )
+          );`);
     await this._databaseProvider.exec(`DELETE FROM language;`);
   }
 
@@ -70,6 +71,7 @@ export class TableProvider {
           currentBatch.map((l) => ({
             data: JSON.stringify(l),
             lang: filename,
+            status: undefined,
           }))
         );
         currentBatch = [];
@@ -112,7 +114,11 @@ export class TableProvider {
     ).total;
 
     const pageData = {
-      data: filteredData.map((l) => ({ id: l.id, ...JSON.parse(l.data) })),
+      data: filteredData.map((l) => ({
+        id: l.id,
+        ...JSON.parse(l.data),
+        status: l.status,
+      })),
       page,
       size,
       totalPages: Math.ceil(totalElements / size),
@@ -144,5 +150,12 @@ export class TableProvider {
   }
   filterTags(rowIndex: number, tagIndex: number) {
     this._eventPublishProvider?.filterTagsPublish(rowIndex, tagIndex);
+  }
+  async changeSuggestion(data: string) {
+    const suggestions = await this._languageEntityManager.filterSuggestion(
+      data,
+      12
+    );
+    this._eventPublishProvider?.suggestionsPublish(suggestions);
   }
 }

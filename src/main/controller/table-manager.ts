@@ -83,6 +83,9 @@ export class TableManager {
   }: IBasicFilterAndPaginationEvent) {
     this._tableProvider.filterAndPaginate(filter, strictFilter, page, size);
   }
+  changeSuggestion(value: string) {
+    this._tableProvider.changeSuggestion(value);
+  }
   changeLanguage(lang: number) {
     this._tableProvider.changeLanguage(lang);
   }
@@ -92,7 +95,7 @@ export class TableManager {
   changePropertiesImplemented(data: boolean) {
     this._tableProvider.changeMissingFilter(data);
   }
-  deleteProperty(id: number, page:number) {
+  deleteProperty(id: number, page: number) {
     this._tableProvider.deleteProperty(id, page);
   }
   private getTemplate(): string {

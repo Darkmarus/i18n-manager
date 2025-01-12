@@ -7,6 +7,7 @@ enum EventsPublish {
   GET_LANGUAGES = "load-languages",
   FILTER_SINGLE = "filter-single",
   FILTER_TO_TAGS = "filter-tags",
+  REFRESH_SUGGESTIONS = "refresh-suggestions",
 }
 export class EventPublishProvider {
   private readonly _webviewPanel: vscode.WebviewPanel;
@@ -42,6 +43,12 @@ export class EventPublishProvider {
     this._webviewPanel.webview.postMessage({
       command: EventsPublish.FILTER_TO_TAGS,
       data: { rowIndex, tagIndex },
+    });
+  }
+  suggestionsPublish(suggestions: string[]) {
+    this._webviewPanel.webview.postMessage({
+      command: EventsPublish.REFRESH_SUGGESTIONS,
+      data: suggestions,
     });
   }
 }
