@@ -1,17 +1,31 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { ItemModal } from "../../../states/modal-provider.svelte";
+  import { tableProvider } from "../../../states/table-provider.svelte";
+  import CheckInput from "../../editor/components/CheckInput.svelte";
 
   const { instance, resolve, data }: ItemModal = $props();
 
+  let languages: { id: number; name: string; checked: boolean }[] = $state([]);
+
   const handleAccept = () => {
-    resolve?.(true);
+    resolve?.([true, languages.filter((x) => x.checked).map((x) => x.name)]);
     instance.close();
   };
 
   const handleCancel = () => {
-    resolve?.(false);
+    resolve?.([false, null]);
     instance.close();
   };
+
+  onMount(() => {
+    const langIndex = +tableProvider.langIndex;
+    languages = tableProvider.languages.map((lang) => ({
+      id: lang.id,
+      name: lang.filename,
+      checked: lang.id === langIndex,
+    }));
+  });
 </script>
 
 <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -46,21 +60,30 @@
             <h3 class="text-base font-semibold text-gray-900" id="modal-title">
               Delete Property
             </h3>
-            <div class="mt-2">
-              <p class="text-sm text-gray-500">
-                Are you sure you want to delete this property?
-              </p>
-              <p class="text-sm text-gray-500">
-                {"[" + data?.path?.join("].[") + "]"}
-              </p>
+            <div class="mt-2 text-sm text-gray-700">
+              <p>Remove Property <span class="font-bold">{"[" + data?.path?.join("].[") + "]"}</span>?</p>
+              <p>in the files</p>
+            </div>
+            <div class="mt-2 flex flex-col text-sm text-gray-700">
+              {#each languages as lang}
+                <CheckInput
+                  class="mb-2"
+                  label={lang.name}
+                  checked={lang.checked}
+                  onClick={(value: boolean) => {
+                    lang.checked = value;
+                  }}
+                />
+              {/each}
             </div>
           </div>
         </div>
       </div>
       <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
         <button
+          disabled={!languages.some((lang) => lang.checked == true)}
           type="button"
-          class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto cursor-pointer select-none"
+          class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto cursor-pointer select-none disabled:bg-red-500"
           onclick={() => handleAccept()}>Delete</button
         >
         <button

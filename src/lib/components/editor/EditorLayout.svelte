@@ -19,13 +19,14 @@
       class="ml-4"
     />
     <CheckInput
-      class="ml-4"
+      class="ml-4 mt-2"
       label="Strict"
       checked={tableProvider.strictFilter}
       onClick={(value: boolean) => tableProvider.changeStrictFilter(value)}
     />
+
     <CheckInput
-      class="ml-4"
+      class="ml-4 mt-2"
       label="Missing"
       checked={tableProvider.missingFilter}
       onClick={(value: boolean) => tableProvider.changeMissingFilter(value)}

@@ -44,11 +44,10 @@ class VscodeEventPublisher {
     });
   }
 
-  deleteProperty(id: number, page: number) {
+  deleteProperty(id: number, langs: string[], page: number) {
     this._vscode.postMessage({
       type: eventPublish.DELETE_PROPERTY,
-      id,
-      page,
+      data: { id, langs, page },
     });
   }
 

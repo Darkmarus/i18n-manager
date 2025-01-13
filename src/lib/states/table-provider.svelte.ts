@@ -10,6 +10,8 @@ class TableProvider {
   missingFilter = $state<boolean>(false);
   languages = $state.raw<ILanguage[]>([]);
 
+  langIndex = $state<number>(0);
+
   changeFilter(filter: string[]) {
     this.filter = filter;
     const data = {
@@ -55,6 +57,7 @@ class TableProvider {
   }
 
   public changeLanguage(data: number) {
+    this.langIndex = data;
     vscodeEventPublisher.changeLanguage(data);
   }
   public changeStrictFilter(data: boolean) {
@@ -65,12 +68,12 @@ class TableProvider {
     this.missingFilter = data;
     vscodeEventPublisher.changeMissingFilter(data);
   }
-  public deleteProperty(id: number) {
+  public deleteProperty(id: number, langs: string[]) {
     let page = this.pagination?.page ?? 1;
     if (this.pagination?.data.length === 1 && this.pagination?.page > 1) {
       page = this.pagination?.page - 1;
     }
-    vscodeEventPublisher.deleteProperty(id, page);
+    vscodeEventPublisher.deleteProperty(id, langs, page);
   }
 }
 
