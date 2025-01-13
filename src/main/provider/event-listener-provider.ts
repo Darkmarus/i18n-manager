@@ -39,7 +39,7 @@ export class EventListenerProvider {
           this._tableManager.changePropertiesImplemented(message.data);
           break;
         case EventsListener.DELETE_PROPERTY:
-          this._tableManager.deleteProperty(message.id, message.page);
+          this._tableManager.deleteProperty(message.data);
           break;
         case EventsListener.CHANGE_SUGGESTION:
           this._tableManager.changeSuggestion(message.text);

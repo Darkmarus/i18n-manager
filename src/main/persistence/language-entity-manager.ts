@@ -11,9 +11,16 @@ export class LanguageEntityManager {
       languageEntity.map((l) => [l.data, l.lang])
     );
   }
-  async delete(id: number) {
-    const sql = `UPDATE language SET status = 'DELETED' WHERE id = ?;`;
-    await this._databaseProvider.run(sql, [id]);
+  async delete(data: { id: number; langs: string[] }) {
+    const sql = `WITH auxQuery AS (
+        SELECT json_extract(data, '$.path') AS path FROM language WHERE id = ?
+    )
+    UPDATE language SET status = 'DELETED' WHERE id in (
+        SELECT id FROM language
+        INNER JOIN auxQuery ON json_extract(language.data, '$.path') = auxQuery.path
+        WHERE language.lang in (${data.langs.map(() => "?").join(",")})
+    );`;
+    await this._databaseProvider.run(sql, [data.id, ...data.langs]);
   }
 
   filterPagination(
@@ -93,13 +100,8 @@ export class LanguageEntityManager {
     if (filter.length > 0) {
       if (modeOrderStrict) {
         const valueConditions =
-          '*"' +
-          filter.map((filtro) => filtro).join('","') +
-          '"*';
-        return [
-          `json_extract(data, '$.path') GLOB ?`,
-          [valueConditions],
-        ];
+          '*"' + filter.map((filtro) => filtro).join('","') + '"*';
+        return [`json_extract(data, '$.path') GLOB ?`, [valueConditions]];
       } else {
         const conditions = filter
           .map(() => `UPPER(json_extract(data, '$.path')) LIKE ?`)

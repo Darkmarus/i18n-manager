@@ -1,5 +1,5 @@
 import type { Language } from "../model/language.interface";
-import type { IProperty } from "../model/pagination.interface";
+import type { IPagination, IProperty } from "../model/pagination.interface";
 import type { LanguageEntityManager } from "../persistence/language-entity-manager";
 import type { DatabaseProvider } from "./database-provider";
 import type { EventPublishProvider } from "./event-publish-provider";
@@ -51,12 +51,15 @@ export class TableProvider {
     this._missingFilter = data;
     this.filterAndPaginate(this._filter, this._strictFilter, 1, this._size);
   }
-  async deleteProperty(id: number, page: number) {
-    await this._languageEntityManager.delete(id);
+  async deleteProperty(data: { id: number; langs: string[]; page: number }) {
+    await this._languageEntityManager.delete({
+      id: data.id,
+      langs: data.langs,
+    });
     await this.filterAndPaginate(
       this._filter,
       this._strictFilter,
-      page,
+      data.page,
       this._size
     );
   }
@@ -113,11 +116,12 @@ export class TableProvider {
       )) || { total: 0 }
     ).total;
 
-    const pageData = {
+    const pageData: IPagination = {
       data: filteredData.map((l) => ({
         id: l.id,
         ...JSON.parse(l.data),
         status: l.status,
+        lang: l.lang,
       })),
       page,
       size,
