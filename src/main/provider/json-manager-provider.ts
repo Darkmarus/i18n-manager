@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as vscode from "vscode";
 import { VscodeUtil } from "../util/vscode-util";
 import { Language } from "./../model/language.interface";
-import { IProperty } from "./../model/pagination.interface";
+import { type IPropertyRaw } from "./../model/pagination.interface";
 
 export class JsonManagerProvider {
   private _flags: any;
@@ -21,26 +21,7 @@ export class JsonManagerProvider {
     });
   }
 
-  // private async selectedLanguage() {
-  //   const options: vscode.QuickPickItem[] = this._languages.map((l) => ({
-  //     label: l.filename,
-  //   }));
-  //   const selected = await vscode.window.showQuickPick(options, {
-  //     placeHolder: "The selected a file will be the default:",
-  //   });
-
-  //   if (selected) {
-  //     vscode.window.showInformationMessage(`Selected: ${selected.label}.`);
-  //     this._languageDefault = this._languages.findIndex(
-  //       (l) => l.filename === selected.label
-  //     );
-  //   } else {
-  //     vscode.window.showErrorMessage("No selected a file.");
-  //     throw new Error("No selected.");
-  //   }
-  // }
-
-  async loadFiles(): Promise<[Language, IProperty[]][] | null> {
+  async loadFiles(): Promise<[Language, IPropertyRaw[]][] | null> {
     for (const batch of this.splitArray(this._files, 5)) {
       const promises = batch.map(async (file) => {
         const rawData = fs.readFileSync(file.fsPath);
@@ -73,8 +54,8 @@ export class JsonManagerProvider {
     return subArrays;
   }
 
-  flattenJSON(obj: any, path: string[] = []): IProperty[] {
-    const result: IProperty[] = [];
+  flattenJSON(obj: any, path: string[] = []): IPropertyRaw[] {
+    const result: IPropertyRaw[] = [];
 
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {

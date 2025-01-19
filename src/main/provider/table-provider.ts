@@ -1,5 +1,8 @@
 import type { Language } from "../model/language.interface";
-import type { IPagination, IProperty } from "../model/pagination.interface";
+import type {
+  IPagination,
+  IPropertyRaw
+} from "../model/pagination.interface";
 import type { LanguageEntityManager } from "../persistence/language-entity-manager";
 import type { DatabaseProvider } from "./database-provider";
 import type { EventPublishProvider } from "./event-publish-provider";
@@ -64,8 +67,8 @@ export class TableProvider {
     );
   }
 
-  async savedDataInBatch(filename: string, data: IProperty[]) {
-    let currentBatch: IProperty[] = [];
+  async savedDataInBatch(filename: string, data: IPropertyRaw[]) {
+    let currentBatch: IPropertyRaw[] = [];
 
     for (let i = 0; i < data.length; i++) {
       currentBatch.push(data[i]);

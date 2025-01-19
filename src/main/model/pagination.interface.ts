@@ -1,5 +1,9 @@
+export interface IPropertyRaw {
+  path: string[];
+  value: any;
+}
 export interface IProperty {
-  id?: number;
+  id: number;
   path: string[];
   lang: string;
   value: any;
