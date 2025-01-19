@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { Section } from "../models/section-type";
-  import { tableProvider } from "../states/table-provider.svelte";
-  import Switch from "./editor/components/Switch.svelte";
+  import { modalProvider } from "../states/modal-provider.svelte";
+  import Button from "./buttons/Button.svelte";
   import EditorLayout from "./editor/EditorLayout.svelte";
   import ChangesLogIcon from "./icons/ChangesLogIcon.svelte";
   import JsonEditIcon from "./icons/JsonEditIcon.svelte";
   import SettingsIcon from "./icons/SettingsIcon.svelte";
+  import MergePropertyModal from "./modals/template/MergePropertyModal.svelte";
 
   const sections = $state<Section[]>([
     {
@@ -29,9 +30,13 @@
   const setSectionActive = (item: Section) => {
     sectionActive = item;
   };
+
+  const handleClickMerge = () => {
+    modalProvider.new(MergePropertyModal);
+  };
 </script>
 
-<div class="flex justify-between mx-4 mt-4">
+<div class="flex mx-4 mt-4">
   <nav class="flex gap-6" aria-label="Tabs">
     {#each sections as item}
       <button
@@ -59,7 +64,9 @@
     {/each}
   </nav>
   {#if sectionActive.type === "EDITOR"}
-  <Switch />
+    <div class="absolute right-9">
+      <Button onclick={handleClickMerge}>Merge</Button>
+    </div>
   {/if}
 </div>
 
