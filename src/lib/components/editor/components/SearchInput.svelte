@@ -108,9 +108,9 @@
       class="
         flex-auto
         leading-6
+        border-none
         placeholder-slate-400
-        !outline-none
-        shadow-sm"
+        !outline-none"
       type="text"
       aria-label="Filter properties"
       placeholder="Filter properties..."
@@ -124,7 +124,7 @@
   </div>
 
   <ul
-    class="absolute w-full bg-white top-10"
+    class="absolute w-full bg-white top-10 shadow"
     transition:fly={{ y: -10, duration: 150 }}
   >
     {#each suggestionProvider.data as item, index}

@@ -8,7 +8,7 @@
   const { instance, resolve, data }: ItemModal = $props();
 
   let editorElement = $state();
-  let editorInstance = $state();
+  let editorInstance = $state<CodeJar>();
 
   const handleAccept = () => {
     resolve?.(true);
@@ -20,6 +20,17 @@
     instance.close();
   };
 
+  const handlePaste = (e: any) => {
+    const clipboardText = e.clipboardData.getData("text/plain") || "";
+    const position = editorInstance?.save().end;
+    console.log(editorInstance?.save());
+    const oldText = editorInstance?.toString() as string;
+    const positionNew = position + clipboardText.length;
+    const newText =
+      oldText.slice(0, position) + clipboardText + oldText.slice(position);
+    editorInstance?.updateCode(newText);
+  };
+
   const handleClickFormat = () => {};
 
   onMount(() => {
@@ -29,13 +40,13 @@
       code = Prism.highlight(code, Prism.languages.json, "json");
       editor.innerHTML = code;
     };
-    const editorInstance = CodeJar(
+    editorInstance = CodeJar(
       editorElement as HTMLElement,
       withLineNumbers(highlight),
       {
-      tab: " ".repeat(4),
-      indentOn: /[(\[]$/,
-    }
+        tab: " ".repeat(4),
+        indentOn: /[(\[]$/,
+      }
     );
     editorInstance.updateCode('{\n\t"nombre": "Juan",\n\t"edad": 30\n}');
   });
@@ -63,8 +74,14 @@
         >
       </div>
 
-      <div class="mx-6 overflow-y-auto h-96 border-solid border-1 border-stone-500 bg-gray-800">
-        <div bind:this={editorElement} class="language-json"></div>
+      <div
+        class="mx-6 overflow-y-auto h-96 border-solid border-1 border-stone-500 editor-custom"
+      >
+        <blockquote
+          bind:this={editorElement}
+          class="language-json"
+          contenteditable="true"
+        ></blockquote>
       </div>
       <div class="bg-gray-50 px-6 py-3 flex justify-end">
         <button
@@ -81,3 +98,9 @@
     </div>
   </div>
 </div>
+
+<style>
+  .editor-custom {
+    background: var(--vscode-textBlockQuote-background);
+  }
+</style>

@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
+* {
+    font-family: var(--vscode-editor-font-family);
+}
+
 code[class*=language-],
 pre[class*=language-] {
     color: #ccc;
     background: 0 0;
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     font-size: 1em;
     text-align: left;
     white-space: pre;
@@ -71,7 +74,7 @@ pre[class*=language-] {
 .token.constant,
 .token.property,
 .token.symbol {
-    color: #f8c555
+    color: var(--vscode-textLink-foreground);
 }
 
 .token.atrule,
@@ -126,11 +129,12 @@ pre[class*=language-] {
     mix-blend-mode: initial;
     height: 100%;
     text-align: center;
+    background-color: var(--vscode-list-inactiveSelectionBackground) !important;
 
 }
 
 .codejar-linenumber {
     position: relative;
     top: 0px;
-    color: white !important;
+    color: var(--vscode-foreground) !important;
 }
