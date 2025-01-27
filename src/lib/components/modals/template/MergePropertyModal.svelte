@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { CodeJar } from "codejar";
-  import { withLineNumbers } from "codejar-linenumbers";
+  import * as ace from "ace-builds";
+  import "ace-builds/src-noconflict/mode-json";
+  import "ace-builds/src-noconflict/theme-cloud_editor_dark";
   import { onMount } from "svelte";
-  import "../../../prism/prism.js";
   import type { ItemModal } from "../../../states/modal-provider.svelte";
 
   const { instance, resolve, data }: ItemModal = $props();
 
-  let editorElement = $state();
-  let editorInstance = $state<CodeJar>();
+  let editorElement = $state<HTMLElement>();
+  let editorInstance = $state<any>();
 
   const handleAccept = () => {
     resolve?.(true);
@@ -20,35 +20,29 @@
     instance.close();
   };
 
-  const handlePaste = (e: any) => {
-    const clipboardText = e.clipboardData.getData("text/plain") || "";
-    const position = editorInstance?.save().end;
-    console.log(editorInstance?.save());
-    const oldText = editorInstance?.toString() as string;
-    const positionNew = position + clipboardText.length;
-    const newText =
-      oldText.slice(0, position) + clipboardText + oldText.slice(position);
-    editorInstance?.updateCode(newText);
+  const handleClickFormat = () => {
+    editorInstance.setValue(
+      JSON.stringify(JSON.parse(editorInstance.getValue()), null, 2)
+    );
+    editorInstance.clearSelection();
   };
 
-  const handleClickFormat = () => {};
-
   onMount(() => {
-    const Prism = (window as any).Prism;
-    const highlight = (editor: any) => {
-      let code = editor.textContent;
-      code = Prism.highlight(code, Prism.languages.json, "json");
-      editor.innerHTML = code;
-    };
-    editorInstance = CodeJar(
-      editorElement as HTMLElement,
-      withLineNumbers(highlight),
-      {
-        tab: " ".repeat(4),
-        indentOn: /[(\[]$/,
-      }
+    const editor = ace.edit(editorElement, {
+      mode: "ace/mode/json",
+    });
+    editor.setTheme("ace/theme/cloud_editor_dark");
+    editor.setOption("showPrintMargin", false);
+    editor.setFontSize(16);
+    editor.setShowPrintMargin(false);
+    editor.setHighlightActiveLine(false);
+    editor.renderer.setHighlightGutterLine(false);
+    editor.setValue(
+      JSON.stringify(JSON.parse('{"nombre": "Juan","edad": 30}'), null, 2)
     );
-    editorInstance.updateCode('{\n\t"nombre": "Juan",\n\t"edad": 30\n}');
+    editor.clearSelection();
+
+    editorInstance = editor;
   });
 </script>
 
@@ -69,19 +63,12 @@
       <div class="flex mx-6 mb-2">
         <button
           type="button"
-          class="mt-3 inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 w-auto cursor-pointer select-none"
+          class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 w-auto cursor-pointer select-none"
           onclick={handleClickFormat}>Format</button
         >
       </div>
-
-      <div
-        class="mx-6 overflow-y-auto h-96 border-solid border-1 border-stone-500 editor-custom"
-      >
-        <blockquote
-          bind:this={editorElement}
-          class="language-json"
-          contenteditable="true"
-        ></blockquote>
+      <div class="mx-6 border-solid border-1 border-stone-500">
+        <pre class="h-96 editor-code-container" bind:this={editorElement}></pre>
       </div>
       <div class="bg-gray-50 px-6 py-3 flex justify-end">
         <button
@@ -98,9 +85,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .editor-custom {
-    background: var(--vscode-textBlockQuote-background);
-  }
-</style>

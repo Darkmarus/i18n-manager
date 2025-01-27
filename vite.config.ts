@@ -6,6 +6,8 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [tailwindcss(), svelte()],
   build: {
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 1600,
     rollupOptions: {
       output: {
         dir: "../i18n-manager/media",

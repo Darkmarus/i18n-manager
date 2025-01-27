@@ -115,7 +115,7 @@
             >
           </td>
           <td class="w-3/12 flex">
-            <div class="truncate">
+            <div class="truncate max-w-72">
               <span>{item.value}</span>
             </div>
           </td>
