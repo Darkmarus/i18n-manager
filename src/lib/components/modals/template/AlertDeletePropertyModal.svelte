@@ -83,7 +83,7 @@
         <button
           disabled={!languages.some((lang) => lang.checked == true)}
           type="button"
-          class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto cursor-pointer select-none disabled:bg-red-500"
+          class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto cursor-pointer select-none disabled:bg-gray-500"
           onclick={() => handleAccept()}>Delete</button
         >
         <button

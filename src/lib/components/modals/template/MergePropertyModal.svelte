@@ -4,8 +4,11 @@
   import "ace-builds/src-noconflict/theme-cloud_editor_dark";
   import { onMount } from "svelte";
   import type { ItemModal } from "../../../states/modal-provider.svelte";
+  import { Debounce } from "../../../utils/debounce";
 
   const { instance, resolve, data }: ItemModal = $props();
+  let enabledSaveButton = $state(false);
+  const debounceEnabledButtonSave = new Debounce(300);
 
   let editorElement = $state<HTMLElement>();
   let editorInstance = $state<any>();
@@ -27,6 +30,22 @@
     editorInstance.clearSelection();
   };
 
+  const isJsonValid = (value: string) => {
+    try {
+      JSON.parse(value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const handleChangeEditorValue = () => {
+    debounceEnabledButtonSave.call(() => {
+      const value = editorInstance.getValue();
+      enabledSaveButton = isJsonValid(value);
+    });
+  };
+
   onMount(() => {
     const editor = ace.edit(editorElement, {
       mode: "ace/mode/json",
@@ -37,11 +56,11 @@
     editor.setShowPrintMargin(false);
     editor.setHighlightActiveLine(false);
     editor.renderer.setHighlightGutterLine(false);
+    editor.getSession().on("change", handleChangeEditorValue);
     editor.setValue(
       JSON.stringify(JSON.parse('{"nombre": "Juan","edad": 30}'), null, 2)
     );
     editor.clearSelection();
-
     editorInstance = editor;
   });
 </script>
@@ -77,9 +96,10 @@
           onclick={() => handleCancel()}>Cancel</button
         >
         <button
+          disabled={!enabledSaveButton}
           type="button"
-          class="inline-flex justify-center rounded-md bg-blue-500 px-6 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-400 ml-3 w-auto cursor-pointer select-none"
-          onclick={() => handleAccept()}>Edit</button
+          class="inline-flex justify-center rounded-md bg-blue-500 px-6 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-400 ml-3 w-auto cursor-pointer select-none disabled:bg-gray-500"
+          onclick={() => handleAccept()}>Save</button
         >
       </div>
     </div>
