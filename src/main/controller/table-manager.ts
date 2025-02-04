@@ -98,6 +98,9 @@ export class TableManager {
   deleteProperty(data: { id: number; langs: string[]; page: number }) {
     this._tableProvider.deleteProperty(data);
   }
+  mergeProperties(data: { langs: string; data: any }) {
+    this._tableProvider.mergeProperties(data);
+  }
   private getTemplate(): string {
     const template = this.resolverUri("index.html");
 

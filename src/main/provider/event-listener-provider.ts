@@ -9,6 +9,7 @@ enum EventsListener {
   CHANGE_MISSING_FILTER = "change-missing-filter",
   DELETE_PROPERTY = "delete-property",
   CHANGE_SUGGESTION = "change-suggestion",
+  MERGE_PROPERTIES = "merge-properties",
 }
 
 export class EventListenerProvider {
@@ -43,6 +44,9 @@ export class EventListenerProvider {
           break;
         case EventsListener.CHANGE_SUGGESTION:
           this._tableManager.changeSuggestion(message.text);
+          break;
+        case EventsListener.MERGE_PROPERTIES:
+          this._tableManager.mergeProperties(message.data);
           break;
         default:
           console.log("Event not found", message.type);

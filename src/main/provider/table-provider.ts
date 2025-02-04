@@ -1,8 +1,5 @@
 import type { Language } from "../model/language.interface";
-import type {
-  IPagination,
-  IPropertyRaw
-} from "../model/pagination.interface";
+import type { IPagination, IPropertyRaw } from "../model/pagination.interface";
 import type { LanguageEntityManager } from "../persistence/language-entity-manager";
 import type { DatabaseProvider } from "./database-provider";
 import type { EventPublishProvider } from "./event-publish-provider";
@@ -164,5 +161,8 @@ export class TableProvider {
       12
     );
     this._eventPublishProvider?.suggestionsPublish(suggestions);
+  }
+  mergeProperties(data: { langs: string; data: any }) {
+    throw new Error("Method not implemented.");
   }
 }
