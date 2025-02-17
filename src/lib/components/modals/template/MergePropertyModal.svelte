@@ -14,12 +14,12 @@
   let editorInstance = $state<any>();
 
   const handleAccept = () => {
-    resolve?.(true);
+    resolve?.([true, JSON.parse(editorInstance.getValue())]);
     instance.close();
   };
 
   const handleCancel = () => {
-    resolve?.(false);
+    resolve?.([false]);
     instance.close();
   };
 

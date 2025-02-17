@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Section } from "../models/section-type";
   import { modalProvider } from "../states/modal-provider.svelte";
+  import { vscodeEventPublisher } from "../states/vscode-event-publish.svelte";
   import Button from "./buttons/Button.svelte";
   import EditorLayout from "./editor/EditorLayout.svelte";
   import ChangesLogIcon from "./icons/ChangesLogIcon.svelte";
@@ -31,8 +32,14 @@
     sectionActive = item;
   };
 
-  const handleClickMerge = () => {
-    modalProvider.new(MergePropertyModal);
+  const handleClickMerge = async () => {
+    const [isConfirmed, data] = await modalProvider.new(
+      MergePropertyModal,
+      null
+    );
+    if (isConfirmed) {
+      vscodeEventPublisher.sendMargeProperties(data);
+    }
   };
 </script>
 

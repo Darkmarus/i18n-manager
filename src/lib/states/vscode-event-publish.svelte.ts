@@ -8,6 +8,7 @@ enum eventPublish {
   CHANGE_MISSING_FILTER = "change-missing-filter",
   DELETE_PROPERTY = "delete-property",
   CHANGE_SUGGESTION = "change-suggestion",
+  MERGE_PROPERTIES = "merge-properties",
 }
 class VscodeEventPublisher {
   private readonly _vscode = acquireVsCodeApi();
@@ -55,6 +56,12 @@ class VscodeEventPublisher {
     this._vscode.postMessage({
       type: eventPublish.CHANGE_SUGGESTION,
       text,
+    });
+  }
+  sendMargeProperties(data: any) {
+    this._vscode.postMessage({
+      type: eventPublish.MERGE_PROPERTIES,
+      data,
     });
   }
 }
