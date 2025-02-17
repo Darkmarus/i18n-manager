@@ -5,10 +5,21 @@ export class LanguageEntityManager {
   constructor(private readonly _databaseProvider: DatabaseProvider) {}
 
   async saveAll(languageEntity: LanguageEntity[]) {
-    const sql = `INSERT INTO language (data, lang) VALUES (?, ?);`;
-    this._databaseProvider.runInsertBatchTransaction(
+    const sql = `INSERT INTO language (data, lang, status) VALUES (?, ?, ?);`;
+    await this._databaseProvider.transaction(
       sql,
-      languageEntity.map((l) => [l.data, l.lang])
+      languageEntity.map((l) => [l.data, l.lang, l.status])
+    );
+  }
+
+  async createdOrUpdated(languageEntity: LanguageEntity[]) {
+    const sql = `INSERT INTO language (data, lang, status) VALUES (?, ?, ?)
+    ON CONFLICT(idx_path) DO UPDATE SET
+        data = excluded.data,
+        status = 'MODIFIED';`;
+    this._databaseProvider.transaction(
+      sql,
+      languageEntity.map((l) => [l.data, l.lang, l.status])
     );
   }
   async delete(data: { id: number; langs: string[] }) {

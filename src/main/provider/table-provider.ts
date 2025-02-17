@@ -1,5 +1,6 @@
 import type { Language } from "../model/language.interface";
 import type { IPagination, IPropertyRaw } from "../model/pagination.interface";
+import type { LanguageEntity } from "../persistence/entity/language-entity.interface";
 import type { LanguageEntityManager } from "../persistence/language-entity-manager";
 import type { DatabaseProvider } from "./database-provider";
 import type { EventPublishProvider } from "./event-publish-provider";
@@ -20,13 +21,17 @@ export class TableProvider {
 
   async init() {
     await this._databaseProvider.exec(`
-        CREATE TABLE IF NOT EXISTS language (
-          id        INTEGER PRIMARY KEY,
-          data      TEXT    NOT NULL,
-          lang      TEXT    NOT NULL,
-          status TEXT    CHECK (status IN ("CREATED", "MODIFIED", "DELETED") )
-          );`);
-    await this._databaseProvider.exec(`DELETE FROM language;`);
+      CREATE TABLE IF NOT EXISTS language (
+        id                   INTEGER NOT NULL  PRIMARY KEY  ,
+        data                 TEXT NOT NULL    ,
+        lang                 TEXT NOT NULL    ,
+        status               TEXT     ,
+        CHECK ( status IN ("CREATED", "MODIFIED", "DELETED") )
+      );
+
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_lang ON language ( json_extract(data, '$.path'), lang );
+      `);
+    await this._databaseProvider.run(`DELETE FROM language;`);
   }
 
   async loadedData() {
@@ -66,19 +71,42 @@ export class TableProvider {
 
   async savedDataInBatch(filename: string, data: IPropertyRaw[]) {
     let currentBatch: IPropertyRaw[] = [];
-
+    const dataEntities: LanguageEntity[][] = [];
+    const promises: Promise<void>[] = [];
     for (let i = 0; i < data.length; i++) {
       currentBatch.push(data[i]);
-      if (currentBatch.length === 20 || i === data.length - 1) {
-        this._languageEntityManager.saveAll(
+      if (currentBatch.length === 100 || i === data.length - 1) {
+        dataEntities.push(
           currentBatch.map((l) => ({
             data: JSON.stringify(l),
             lang: filename,
-            status: undefined,
+            status: null,
           }))
         );
         currentBatch = [];
       }
+    }
+
+    dataEntities.forEach((entities) => {
+      promises.push(this._languageEntityManager.saveAll(entities));
+    });
+
+    await Promise.all(promises);
+  }
+
+  async mergeProperties(data: IPropertyRaw[]) {
+    let currentBatch: IPropertyRaw[] = [];
+    for (let i = 0; i < data.length; i++) {
+      currentBatch.push(data[i]);
+      if (currentBatch.length === 20 || i === data.length - 1) {
+        const langEntities: LanguageEntity[] = currentBatch.map((l) => ({
+          data: JSON.stringify(l),
+          lang: this.getLanguageDefault().filename,
+          status: "CREATED",
+        }));
+        this._languageEntityManager.createdOrUpdated(langEntities);
+      }
+      currentBatch = [];
     }
   }
 
@@ -161,8 +189,5 @@ export class TableProvider {
       12
     );
     this._eventPublishProvider?.suggestionsPublish(suggestions);
-  }
-  mergeProperties(data: { langs: string; data: any }) {
-    throw new Error("Method not implemented.");
   }
 }

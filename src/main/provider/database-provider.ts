@@ -5,7 +5,7 @@ export class DatabaseProvider {
   private _db?: sqlite3.Database;
   private async open(): Promise<void> {
     this._db = new sqlite3.Database(
-      ":memory:",
+      "D:/project/plugin-vscode/i18n-project/i18n-manager/manager.db",
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
       (err) => {
         if (err) {
@@ -22,6 +22,7 @@ export class DatabaseProvider {
     if (!this._db) {
       await this.open();
     }
+
     return new Promise<void>((resolve, reject) => {
       this._db!.exec(sql, (err) => {
         err ? reject(err) : resolve();
@@ -34,6 +35,9 @@ export class DatabaseProvider {
       return new Promise<void>((resolve, reject) => {
         this._db!.close((err) => {
           if (err) {
+            vscode.window.showErrorMessage(
+              "Error while closing database: " + err?.message
+            );
             reject(err);
           } else {
             this._db = undefined;
@@ -49,6 +53,7 @@ export class DatabaseProvider {
     if (!this._db) {
       await this.open();
     }
+
     return new Promise((resolve, reject) => {
       this._db!.run(sql, params, (err) => {
         err ? reject(err) : resolve();
@@ -59,6 +64,7 @@ export class DatabaseProvider {
     if (!this._db) {
       await this.open();
     }
+
     return new Promise<T | undefined>((resolve, reject) => {
       this._db!.get(sql, params, (err, row: T) => {
         if (err) {
@@ -73,6 +79,7 @@ export class DatabaseProvider {
     if (!this._db) {
       await this.open();
     }
+
     return new Promise<T[]>((resolve, reject) => {
       this._db!.all(sql, params, (err, rows: T[]) => {
         if (err) {
@@ -84,19 +91,18 @@ export class DatabaseProvider {
     });
   }
 
-  async runInsertBatchTransaction(sql: string, params?: any[]): Promise<void> {
+  async transaction(sql: string, params: any[][]): Promise<void> {
     if (!this._db) {
       await this.open();
     }
+
     return new Promise((resolve, reject) => {
       this._db!.serialize(() => {
-        this._db!.run("BEGIN TRANSACTION");
-
-        params?.forEach((param) => {
-          this._db!.run(sql, param);
-        });
-
-        this._db!.run("COMMIT", (err) => {
+        this._db!.run("BEGIN TRANSACTION;");
+        const stmt = this._db!.prepare(sql);
+        params?.forEach((p) => stmt.run(p));
+        stmt.finalize();
+        this._db!.run("COMMIT;", (err) => {
           err ? reject(err) : resolve();
         });
       });

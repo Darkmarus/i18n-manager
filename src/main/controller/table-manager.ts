@@ -24,16 +24,11 @@ export class TableManager {
     const files = await this._jsonManagerProvider.loadFiles();
 
     if (files) {
-      const promises: Promise<void>[] = [];
       files.forEach((f) => {
         const [lang, data] = f;
         this._tableProvider.addLanguage(lang);
-        promises.push(
-          this._tableProvider.savedDataInBatch(lang.filename, data)
-        );
+        this._tableProvider.savedDataInBatch(lang.filename, data);
       });
-
-      await Promise.all(promises);
     }
     await this.createdWebView(viewId);
   }
@@ -98,8 +93,9 @@ export class TableManager {
   deleteProperty(data: { id: number; langs: string[]; page: number }) {
     this._tableProvider.deleteProperty(data);
   }
-  mergeProperties(data: { langs: string; data: any }) {
-    this._tableProvider.mergeProperties(data);
+  mergeProperties(data: any) {
+    const dataFlatten = this._jsonManagerProvider.flattenJSON(data);
+    this._tableProvider.mergeProperties(dataFlatten);
   }
   private getTemplate(): string {
     const template = this.resolverUri("index.html");
