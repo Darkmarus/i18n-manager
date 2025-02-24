@@ -46,7 +46,7 @@ export class EventListenerProvider {
           this._tableManager.changeSuggestion(message.text);
           break;
         case EventsListener.MERGE_PROPERTIES:
-          this._tableManager.mergeProperties(message.data);
+          this._tableManager.mergeProperties(message.data,message.langIndex);
           break;
         default:
           console.log("Event not found", message.type);

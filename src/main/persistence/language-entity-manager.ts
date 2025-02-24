@@ -14,8 +14,9 @@ export class LanguageEntityManager {
 
   async createdOrUpdated(languageEntity: LanguageEntity[]) {
     const sql = `INSERT INTO language (data, lang, status) VALUES (?, ?, ?)
-    ON CONFLICT(idx_path) DO UPDATE SET
+    ON CONFLICT DO UPDATE SET
         data = excluded.data,
+        lang = excluded.lang,
         status = 'MODIFIED';`;
     this._databaseProvider.transaction(
       sql,

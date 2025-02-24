@@ -93,9 +93,9 @@ export class TableManager {
   deleteProperty(data: { id: number; langs: string[]; page: number }) {
     this._tableProvider.deleteProperty(data);
   }
-  mergeProperties(data: any) {
+  mergeProperties(data: any, langIndex: number) {
     const dataFlatten = this._jsonManagerProvider.flattenJSON(data);
-    this._tableProvider.mergeProperties(dataFlatten);
+    this._tableProvider.mergeProperties(dataFlatten, langIndex);
   }
   private getTemplate(): string {
     const template = this.resolverUri("index.html");

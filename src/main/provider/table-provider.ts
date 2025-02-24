@@ -70,44 +70,53 @@ export class TableProvider {
   }
 
   async savedDataInBatch(filename: string, data: IPropertyRaw[]) {
-    let currentBatch: IPropertyRaw[] = [];
-    const dataEntities: LanguageEntity[][] = [];
-    const promises: Promise<void>[] = [];
-    for (let i = 0; i < data.length; i++) {
-      currentBatch.push(data[i]);
-      if (currentBatch.length === 100 || i === data.length - 1) {
-        dataEntities.push(
-          currentBatch.map((l) => ({
-            data: JSON.stringify(l),
-            lang: filename,
-            status: null,
-          }))
-        );
-        currentBatch = [];
-      }
-    }
+    const BATCH_SIZE = 100;
 
-    dataEntities.forEach((entities) => {
-      promises.push(this._languageEntityManager.saveAll(entities));
-    });
+    const dataEntities: LanguageEntity[][] = this.chunkArray(
+      data,
+      BATCH_SIZE
+    ).map((batch) =>
+      batch.map((item) => ({
+        data: JSON.stringify(item),
+        lang: filename,
+        status: null,
+      }))
+    );
 
-    await Promise.all(promises);
+    await Promise.all(
+      dataEntities.map((entities) =>
+        this._languageEntityManager.saveAll(entities)
+      )
+    );
   }
 
-  async mergeProperties(data: IPropertyRaw[]) {
-    let currentBatch: IPropertyRaw[] = [];
-    for (let i = 0; i < data.length; i++) {
-      currentBatch.push(data[i]);
-      if (currentBatch.length === 20 || i === data.length - 1) {
-        const langEntities: LanguageEntity[] = currentBatch.map((l) => ({
-          data: JSON.stringify(l),
-          lang: this.getLanguageDefault().filename,
-          status: "CREATED",
-        }));
-        this._languageEntityManager.createdOrUpdated(langEntities);
-      }
-      currentBatch = [];
+  async mergeProperties(data: IPropertyRaw[], langIndex: number) {
+    const BATCH_SIZE = 20;
+
+    const dataEntities: LanguageEntity[][] = this.chunkArray(
+      data,
+      BATCH_SIZE
+    ).map((batch) =>
+      batch.map((item) => ({
+        data: JSON.stringify(item),
+        lang: this._languages[langIndex].filename,
+        status: "CREATED",
+      }))
+    );
+
+    await Promise.all(
+      dataEntities.map((entities) =>
+        this._languageEntityManager.createdOrUpdated(entities)
+      )
+    );
+  }
+
+  private chunkArray<T>(array: T[], size: number): T[][] {
+    const result: T[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
     }
+    return result;
   }
 
   async filterAndPaginate(
