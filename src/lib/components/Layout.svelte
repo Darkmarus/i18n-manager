@@ -33,12 +33,11 @@
   };
 
   const handleClickMerge = async () => {
-    const [isConfirmed, data] = await modalProvider.new(
-      MergePropertyModal,
-      null
-    );
+    const [isConfirmed, data, langIndex] = await modalProvider.new<
+      [boolean, any, number]
+    >(MergePropertyModal, null);
     if (isConfirmed) {
-      vscodeEventPublisher.sendMargeProperties(data);
+      vscodeEventPublisher.sendMargeProperties(data,langIndex);
     }
   };
 </script>

@@ -58,10 +58,11 @@ class VscodeEventPublisher {
       text,
     });
   }
-  sendMargeProperties(data: any) {
+  sendMargeProperties(data: any, langIndex: number) {
     this._vscode.postMessage({
       type: eventPublish.MERGE_PROPERTIES,
       data,
+      langIndex,
     });
   }
 }

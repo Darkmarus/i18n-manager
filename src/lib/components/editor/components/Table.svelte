@@ -53,7 +53,7 @@
   };
 
   const handleDeleteItem = async (item: IProperty) => {
-    const [isConfirmed, langs] = await modalProvider.new(
+    const [isConfirmed, langs] = await modalProvider.new<[boolean, string[]]>(
       AlertDeletePropertyModal,
       item
     );

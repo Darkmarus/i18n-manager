@@ -4,7 +4,9 @@
   import "ace-builds/src-noconflict/theme-cloud_editor_dark";
   import { onMount } from "svelte";
   import type { ItemModal } from "../../../states/modal-provider.svelte";
+  import { tableProvider } from "../../../states/table-provider.svelte";
   import { Debounce } from "../../../utils/debounce";
+  import Selection from "../../editor/components/Selection.svelte";
 
   const { instance, resolve, data }: ItemModal = $props();
   let enabledSaveButton = $state(false);
@@ -12,9 +14,10 @@
 
   let editorElement = $state<HTMLElement>();
   let editorInstance = $state<any>();
+  let langIndex = $state();
 
   const handleAccept = () => {
-    resolve?.([true, JSON.parse(editorInstance.getValue())]);
+    resolve?.([true, JSON.parse(editorInstance.getValue()), langIndex]);
     instance.close();
   };
 
@@ -57,11 +60,11 @@
     editor.setHighlightActiveLine(false);
     editor.renderer.setHighlightGutterLine(false);
     editor.getSession().on("change", handleChangeEditorValue);
-    editor.setValue(
-      JSON.stringify(JSON.parse('{"nombre": "Juan","edad": 30}'), null, 2)
-    );
+    editor.setValue(JSON.stringify(JSON.parse("{}"), null, 2));
     editor.clearSelection();
     editorInstance = editor;
+
+    langIndex = tableProvider.langIndex;
   });
 </script>
 
@@ -80,6 +83,12 @@
         </div>
       </div>
       <div class="flex mx-6 mb-2">
+        <Selection
+          languages={tableProvider.languages}
+          onChange={(value: number) => (langIndex = value)}
+          initValue={tableProvider.langIndex}
+          class="mr-4"
+        />
         <button
           type="button"
           class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 w-auto cursor-pointer select-none"

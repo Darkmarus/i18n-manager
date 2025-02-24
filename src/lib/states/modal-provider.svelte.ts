@@ -1,16 +1,21 @@
-export interface ItemModal {
+export interface ItemModal<R = any> {
   id: number;
-  data?: any;
   component: any;
+  resolve: (value: R) => void;
   instance?: any;
-  resolve?: (x?: any) => any;
+  data?: any;
 }
 
 class ModalProvider {
   modals = $state<ItemModal[]>([]);
-  new(component: any, data?: any): Promise<[boolean, any]> {
+  new<R = [boolean]>(component: any, data?: any): Promise<R> {
     return new Promise((resolve) => {
-      const aux: ItemModal = { id: Date.now(), component, resolve, data };
+      const aux: ItemModal<R> = {
+        id: Date.now(),
+        component,
+        resolve,
+        data,
+      };
       this.modals.push(aux);
     });
   }
