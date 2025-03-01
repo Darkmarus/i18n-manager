@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { modalProvider } from "../../states/modal-provider.svelte";
+  import { modalProvider } from "../../lib/states/modal-provider.svelte";
   import Modal from "./Modal.svelte";
 </script>
 

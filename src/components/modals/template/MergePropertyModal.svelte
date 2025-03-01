@@ -3,10 +3,10 @@
   import "ace-builds/src-noconflict/mode-json";
   import "ace-builds/src-noconflict/theme-cloud_editor_dark";
   import { onMount } from "svelte";
-  import type { ItemModal } from "../../../states/modal-provider.svelte";
-  import { tableProvider } from "../../../states/table-provider.svelte";
-  import { Debounce } from "../../../utils/debounce";
-  import Selection from "../../editor/components/Selection.svelte";
+  import type { ItemModal } from "../../../lib/states/modal-provider.svelte";
+  import { tableProvider } from "../../../lib/states/table-provider.svelte";
+  import { Debounce } from "../../../lib/utils/debounce";
+  import Selection from "../../core/Selection.svelte";
 
   const { instance, resolve, data }: ItemModal = $props();
   let enabledSaveButton = $state(false);

@@ -1,4 +1,4 @@
-import { vscodeEventPublisher } from "./vscode-event-publish.svelte";
+import { vscodeEventPublisher } from './vscode-event-publish.svelte';
 
 export class SuggestionProvider {
   private _data = $state<string[]>([]);

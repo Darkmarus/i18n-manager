@@ -1,5 +1,5 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-*:not(.editor-code-container *){
-    font-family: var(--vscode-editor-font-family);
+*:not(.editor-code-container *) {
+  font-family: var(--vscode-editor-font-family);
 }

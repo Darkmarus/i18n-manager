@@ -2,13 +2,14 @@
   import type {
     IPagination,
     IProperty,
-  } from "../../../models/pagination.interface";
-  import { modalProvider } from "../../../states/modal-provider.svelte";
-  import { tableProvider } from "../../../states/table-provider.svelte";
-  import JsonEditIcon from "../../icons/JsonEditIcon.svelte";
-  import TrashIcon from "../../icons/TrashIcon.svelte";
-  import AlertDeletePropertyModal from "../../modals/template/AlertDeletePropertyModal.svelte";
-  import EditPropertyModal from "../../modals/template/EditPropertyModal.svelte";
+  } from "../../lib/models/pagination.interface";
+  import { modalProvider } from "../../lib/states/modal-provider.svelte";
+  import { tableProvider } from "../../lib/states/table-provider.svelte";
+  import JsonEditIcon from "../icons/JsonEditIcon.svelte";
+  import TrashIcon from "../icons/TrashIcon.svelte";
+  import AlertDeletePropertyModal from "../modals/template/AlertDeletePropertyModal.svelte";
+  import EditPropertyModal from "../modals/template/EditPropertyModal.svelte";
+
   import Badge from "./Badge.svelte";
 
   interface Props {

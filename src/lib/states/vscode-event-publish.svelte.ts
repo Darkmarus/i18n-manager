@@ -1,14 +1,14 @@
-import type { IBasicFilterAndPaginationEvent } from "../models/events/publish/basic-filter-and-pagination.event";
+import type { IBasicFilterAndPaginationEvent } from '../models/events/publish/basic-filter-and-pagination.event';
 
 enum eventPublish {
-  LOADED = "loaded",
-  CHANGE_PAGE_AND_FIlTER = "change-page-filter",
-  CHANGE_LANGUAGE = "change-language",
-  CHANGE_STRICT_FILTER = "change-strict-filter",
-  CHANGE_MISSING_FILTER = "change-missing-filter",
-  DELETE_PROPERTY = "delete-property",
-  CHANGE_SUGGESTION = "change-suggestion",
-  MERGE_PROPERTIES = "merge-properties",
+  LOADED = 'loaded',
+  CHANGE_PAGE_AND_FIlTER = 'change-page-filter',
+  CHANGE_LANGUAGE = 'change-language',
+  CHANGE_STRICT_FILTER = 'change-strict-filter',
+  CHANGE_MISSING_FILTER = 'change-missing-filter',
+  DELETE_PROPERTY = 'delete-property',
+  CHANGE_SUGGESTION = 'change-suggestion',
+  MERGE_PROPERTIES = 'merge-properties',
 }
 class VscodeEventPublisher {
   private readonly _vscode = acquireVsCodeApi();

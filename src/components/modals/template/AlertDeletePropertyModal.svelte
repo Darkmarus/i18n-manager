@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { ItemModal } from "../../../states/modal-provider.svelte";
-  import { tableProvider } from "../../../states/table-provider.svelte";
-  import CheckInput from "../../editor/components/CheckInput.svelte";
+  import type { ItemModal } from "../../../lib/states/modal-provider.svelte";
+  import { tableProvider } from "../../../lib/states/table-provider.svelte";
+  import CheckInput from "../../core/CheckInput.svelte";
 
   const { instance, resolve, data }: ItemModal = $props();
 
@@ -61,7 +61,11 @@
               Delete Property
             </h3>
             <div class="mt-2 text-sm text-gray-700">
-              <p>Remove Property <span class="font-bold">{"[" + data?.path?.join("].[") + "]"}</span>?</p>
+              <p>
+                Remove Property <span class="font-bold"
+                  >{"[" + data?.path?.join("].[") + "]"}</span
+                >?
+              </p>
               <p>in the files</p>
             </div>
             <div class="mt-2 flex flex-col text-sm text-gray-700">

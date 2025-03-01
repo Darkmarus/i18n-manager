@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { Section } from "../models/section-type";
-  import { modalProvider } from "../states/modal-provider.svelte";
-  import { vscodeEventPublisher } from "../states/vscode-event-publish.svelte";
-  import Button from "./buttons/Button.svelte";
-  import EditorLayout from "./editor/EditorLayout.svelte";
-  import ChangesLogIcon from "./icons/ChangesLogIcon.svelte";
-  import JsonEditIcon from "./icons/JsonEditIcon.svelte";
-  import SettingsIcon from "./icons/SettingsIcon.svelte";
-  import MergePropertyModal from "./modals/template/MergePropertyModal.svelte";
+  import type { Section } from "../../lib/models/section-type";
+  import { modalProvider } from "../../lib/states/modal-provider.svelte";
+  import { vscodeEventPublisher } from "../../lib/states/vscode-event-publish.svelte";
+  import Button from "../core/Button.svelte";
+  import ChangesLogIcon from "../icons/ChangesLogIcon.svelte";
+  import JsonEditIcon from "../icons/JsonEditIcon.svelte";
+  import SettingsIcon from "../icons/SettingsIcon.svelte";
+  import MergePropertyModal from "../modals/template/MergePropertyModal.svelte";
+  import EditorLayout from "./EditorLayout.svelte";
 
   const sections = $state<Section[]>([
     {
@@ -37,7 +37,7 @@
       [boolean, any, number]
     >(MergePropertyModal, null);
     if (isConfirmed) {
-      vscodeEventPublisher.sendMargeProperties(data,langIndex);
+      vscodeEventPublisher.sendMargeProperties(data, langIndex);
     }
   };
 </script>

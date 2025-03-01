@@ -1,7 +1,7 @@
-import type { IBasicFilterAndPaginationEvent } from "../models/events/publish/basic-filter-and-pagination.event";
-import type { ILanguage } from "../models/language.interface";
-import type { IPagination } from "../models/pagination.interface";
-import { vscodeEventPublisher } from "./vscode-event-publish.svelte";
+import type { IBasicFilterAndPaginationEvent } from '../models/events/publish/basic-filter-and-pagination.event';
+import type { ILanguage } from '../models/language.interface';
+import type { IPagination } from '../models/pagination.interface';
+import { vscodeEventPublisher } from './vscode-event-publish.svelte';
 
 class TableProvider {
   pagination = $state.raw<IPagination | undefined>();

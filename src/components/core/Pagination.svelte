@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { tableProvider } from "../../../states/table-provider.svelte";
-  import Button from "../../buttons/Button.svelte";
+  import { tableProvider } from "../../lib/states/table-provider.svelte";
+  import Button from "./Button.svelte";
 
   interface Props {
     onChangePage: (page: number) => void;

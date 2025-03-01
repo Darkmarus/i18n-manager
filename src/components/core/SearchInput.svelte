@@ -1,9 +1,9 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { suggestionProvider } from "../../../states/suggestion-provider.svelte";
-  import { Debounce } from "../../../utils/debounce";
-  import LoadingIcon from "../../icons/LoadingIcon.svelte";
-  import SearchIcon from "../../icons/SearchIcon.svelte";
+  import { suggestionProvider } from "../../lib/states/suggestion-provider.svelte";
+  import { Debounce } from "../../lib/utils/debounce";
+  import LoadingIcon from "../icons/LoadingIcon.svelte";
+  import SearchIcon from "../icons/SearchIcon.svelte";
   import Badge from "./Badge.svelte";
   interface Props {
     searchedItems: string[];

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { tableProvider } from "../../states/table-provider.svelte";
-  import CheckInput from "./components/CheckInput.svelte";
-  import Pagination from "./components/Pagination.svelte";
-  import SearchInput from "./components/SearchInput.svelte";
-  import Selection from "./components/Selection.svelte";
-  import Table from "./components/Table.svelte";
+  import { tableProvider } from "../../lib/states/table-provider.svelte";
+  import CheckInput from "../core/CheckInput.svelte";
+  import Pagination from "../core/Pagination.svelte";
+  import SearchInput from "../core/SearchInput.svelte";
+  import Selection from "../core/Selection.svelte";
+  import Table from "../core/Table.svelte";
 </script>
 
 <div class="flex">
