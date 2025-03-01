@@ -1,13 +1,13 @@
-import * as vscode from "vscode";
-import type { IPagination } from "../model/pagination.interface";
-import { Language } from "./../model/language.interface";
+import * as vscode from 'vscode';
+import type { IPagination } from '../model/pagination.interface';
+import { Language } from './../model/language.interface';
 
 enum EventsPublish {
-  REFRESH_TABLE = "refresh-table",
-  GET_LANGUAGES = "load-languages",
-  FILTER_SINGLE = "filter-single",
-  FILTER_TO_TAGS = "filter-tags",
-  REFRESH_SUGGESTIONS = "refresh-suggestions",
+  REFRESH_TABLE = 'refresh-table',
+  GET_LANGUAGES = 'load-languages',
+  FILTER_SINGLE = 'filter-single',
+  FILTER_TO_TAGS = 'filter-tags',
+  REFRESH_SUGGESTIONS = 'refresh-suggestions',
 }
 export class EventPublishProvider {
   private readonly _webviewPanel: vscode.WebviewPanel;

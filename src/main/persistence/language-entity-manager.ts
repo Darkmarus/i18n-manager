@@ -1,5 +1,5 @@
-import { DatabaseProvider } from "../provider/database-provider";
-import type { LanguageEntity } from "./entity/language-entity.interface";
+import { DatabaseProvider } from '../provider/database-provider';
+import type { LanguageEntity } from './entity/language-entity.interface';
 
 export class LanguageEntityManager {
   constructor(private readonly _databaseProvider: DatabaseProvider) {}
@@ -30,7 +30,7 @@ export class LanguageEntityManager {
     UPDATE language SET status = 'DELETED' WHERE id in (
         SELECT id FROM language
         INNER JOIN auxQuery ON json_extract(language.data, '$.path') = auxQuery.path
-        WHERE language.lang in (${data.langs.map(() => "?").join(",")})
+        WHERE language.lang in (${data.langs.map(() => '?').join(',')})
     );`;
     await this._databaseProvider.run(sql, [data.id, ...data.langs]);
   }
@@ -45,17 +45,11 @@ export class LanguageEntityManager {
     propertiesImplemented: boolean
   ): Promise<LanguageEntity[]> {
     const offset = (page - 1) * pageSize;
-    let sql: string = "";
+    let sql: string = '';
     let params: any[] = [];
-    const conditionsFilterImplemented = this.conditionsFilterImplemented(
-      propertiesImplemented,
-      sizeLanguages
-    );
+    const conditionsFilterImplemented = this.conditionsFilterImplemented(propertiesImplemented, sizeLanguages);
     if (filter.length > 0) {
-      const [conditions, valueConditions] = this.conditionsFilter(
-        filter,
-        modeOrderStrict
-      );
+      const [conditions, valueConditions] = this.conditionsFilter(filter, modeOrderStrict);
       sql = `SELECT * FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED' LIMIT ? OFFSET ?;`;
       params = [...valueConditions, lang, pageSize, offset];
     } else {
@@ -72,17 +66,11 @@ export class LanguageEntityManager {
     modeOrderStrict: boolean,
     propertiesImplemented: boolean
   ): Promise<{ total: number } | undefined> {
-    let sql: string = "";
+    let sql: string = '';
     let params: any[] = [];
-    const conditionsFilterImplemented = this.conditionsFilterImplemented(
-      propertiesImplemented,
-      sizeLanguages
-    );
+    const conditionsFilterImplemented = this.conditionsFilterImplemented(propertiesImplemented, sizeLanguages);
     if (filter.length > 0) {
-      const [conditions, valueConditions] = this.conditionsFilter(
-        filter,
-        modeOrderStrict
-      );
+      const [conditions, valueConditions] = this.conditionsFilter(filter, modeOrderStrict);
       sql = `SELECT COUNT(*) AS total FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED';`;
       params = [...valueConditions, lang];
     } else {
@@ -92,51 +80,36 @@ export class LanguageEntityManager {
     return this._databaseProvider.get<{ total: number }>(sql, params);
   }
 
-  private conditionsFilterImplemented(
-    propertiesImplemented: boolean,
-    numberLanguages: number
-  ) {
+  private conditionsFilterImplemented(propertiesImplemented: boolean, numberLanguages: number) {
     if (propertiesImplemented) {
       return `AND json_extract( data, '$.path') IN (
         SELECT json_extract(l2.data, '$.path') FROM language l2
         GROUP BY json_extract(l2.data, '$.path') HAVING ${numberLanguages} > COUNT(*)
       )`;
     }
-    return "";
+    return '';
   }
 
-  private conditionsFilter(
-    filter: string[],
-    modeOrderStrict: boolean
-  ): [string, any[]] {
+  private conditionsFilter(filter: string[], modeOrderStrict: boolean): [string, any[]] {
     if (filter.length > 0) {
       if (modeOrderStrict) {
-        const valueConditions =
-          '*"' + filter.map((filtro) => filtro).join('","') + '"*';
+        const valueConditions = '*"' + filter.map((filtro) => filtro).join('","') + '"*';
         return [`json_extract(data, '$.path') GLOB ?`, [valueConditions]];
       } else {
-        const conditions = filter
-          .map(() => `UPPER(json_extract(data, '$.path')) LIKE ?`)
-          .join(" OR ");
-        const valueConditions = filter.map(
-          (filtro) => `%${filtro.toUpperCase()}%`
-        );
+        const conditions = filter.map(() => `UPPER(json_extract(data, '$.path')) LIKE ?`).join(' OR ');
+        const valueConditions = filter.map((filtro) => `%${filtro.toUpperCase()}%`);
         return [conditions, valueConditions];
       }
     }
-    return ["", []];
+    return ['', []];
   }
   async filterSuggestion(value: string, size: number): Promise<string[]> {
     if (!value) {
       return [];
     }
     const sql = `SELECT DISTINCT value FROM language, json_each( language.data, '$.path' ) WHERE value LIKE '%${
-      value || ""
+      value || ''
     }%' LIMIT ?;`;
-    return (
-      (
-        await this._databaseProvider.getAll<{ value: string }>(sql, [size])
-      )?.map((r) => r.value) || []
-    );
+    return (await this._databaseProvider.getAll<{ value: string }>(sql, [size]))?.map((r) => r.value) || [];
   }
 }

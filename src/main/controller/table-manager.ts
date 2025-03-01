@@ -1,12 +1,12 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as vscode from "vscode";
-import type { IBasicFilterAndPaginationEvent } from "../model/events/listener/basic-filter-and-pagination.event";
-import { EventListenerProvider } from "../provider/event-listener-provider";
-import { EventPublishProvider } from "../provider/event-publish-provider";
-import type { JsonManagerProvider } from "../provider/json-manager-provider";
-import type { TableProvider } from "../provider/table-provider";
-import { VscodeUtil } from "../util/vscode-util";
+import * as fs from 'fs';
+import * as path from 'path';
+import * as vscode from 'vscode';
+import type { IBasicFilterAndPaginationEvent } from '../model/events/listener/basic-filter-and-pagination.event';
+import { EventListenerProvider } from '../provider/event-listener-provider';
+import { EventPublishProvider } from '../provider/event-publish-provider';
+import type { JsonManagerProvider } from '../provider/json-manager-provider';
+import type { TableProvider } from '../provider/table-provider';
+import { VscodeUtil } from '../util/vscode-util';
 
 export class TableManager {
   private _panel?: vscode.WebviewPanel;
@@ -34,22 +34,13 @@ export class TableManager {
   }
 
   private async createdWebView(viewId: string) {
-    this._panel = vscode.window.createWebviewPanel(
-      viewId,
-      "i18n Manager",
-      vscode.ViewColumn.One,
-      {
-        enableScripts: true,
-        localResourceRoots: [
-          vscode.Uri.file(path.join(this._context.extensionPath, "media")),
-        ],
-      }
-    );
+    this._panel = vscode.window.createWebviewPanel(viewId, 'i18n Manager', vscode.ViewColumn.One, {
+      enableScripts: true,
+      localResourceRoots: [vscode.Uri.file(path.join(this._context.extensionPath, 'media'))],
+    });
     this._eventListenerProvider = new EventListenerProvider(this, this._panel);
     this._eventListenerProvider.watchEvents();
-    this._tableProvider.setEventPublishProvider(
-      new EventPublishProvider(this._panel)
-    );
+    this._tableProvider.setEventPublishProvider(new EventPublishProvider(this._panel));
 
     this._panel.webview.html = this.getTemplate();
     this._panel.onDidDispose(() => {
@@ -63,19 +54,12 @@ export class TableManager {
   }
 
   activeView() {
-    const columnToShowIn = vscode.window.activeTextEditor
-      ? vscode.window.activeTextEditor.viewColumn
-      : undefined;
+    const columnToShowIn = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
 
     this._panel?.reveal(columnToShowIn);
   }
 
-  filterAndPaginate({
-    filter,
-    page,
-    size,
-    strictFilter,
-  }: IBasicFilterAndPaginationEvent) {
+  filterAndPaginate({ filter, page, size, strictFilter }: IBasicFilterAndPaginationEvent) {
     this._tableProvider.filterAndPaginate(filter, strictFilter, page, size);
   }
   changeSuggestion(value: string) {
@@ -98,26 +82,26 @@ export class TableManager {
     this._tableProvider.mergeProperties(dataFlatten, langIndex);
   }
   private getTemplate(): string {
-    const template = this.resolverUri("index.html");
+    const template = this.resolverUri('index.html');
 
-    const linksPath = [this.resolverUri("index.css")]
+    const linksPath = [this.resolverUri('index.css')]
       .map((l) => `<link rel="stylesheet" crossorigin href="${l}">`)
-      .join("\n");
+      .join('\n');
 
-    const linksScript = [this.resolverUri("index.js")]
+    const linksScript = [this.resolverUri('index.js')]
       .map((l) => `<script type="module" crossorigin src="${l}"></script>`)
-      .join("\n");
+      .join('\n');
 
     return fs
       .readFileSync(template.fsPath)
       .toString()
-      .replace("{{LINKS_CSS}}", linksPath)
-      .replace("{{LINKS_SCRIPTS}}", linksScript);
+      .replace('{{LINKS_CSS}}', linksPath)
+      .replace('{{LINKS_SCRIPTS}}', linksScript);
   }
 
   private resolverUri(file: string): vscode.Uri {
     if (!this._panel) {
-      throw new Error("Panel is not loaded.");
+      throw new Error('Panel is not loaded.');
     }
 
     const uri = vscode.Uri.file(VscodeUtil.resolverUri(file).path);

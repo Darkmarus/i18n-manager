@@ -1,9 +1,9 @@
-import type { Language } from "../model/language.interface";
-import type { IPagination, IPropertyRaw } from "../model/pagination.interface";
-import type { LanguageEntity } from "../persistence/entity/language-entity.interface";
-import type { LanguageEntityManager } from "../persistence/language-entity-manager";
-import type { DatabaseProvider } from "./database-provider";
-import type { EventPublishProvider } from "./event-publish-provider";
+import type { Language } from '../model/language.interface';
+import type { IPagination, IPropertyRaw } from '../model/pagination.interface';
+import type { LanguageEntity } from '../persistence/entity/language-entity.interface';
+import type { LanguageEntityManager } from '../persistence/language-entity-manager';
+import type { DatabaseProvider } from './database-provider';
+import type { EventPublishProvider } from './event-publish-provider';
 
 export class TableProvider {
   private readonly _languages: Language[] = [];
@@ -37,12 +37,7 @@ export class TableProvider {
   async loadedData() {
     this._eventPublishProvider?.languagesPublish(this.languages);
 
-    this.filterAndPaginate(
-      this._filter,
-      this._strictFilter,
-      this._page,
-      this._size
-    );
+    this.filterAndPaginate(this._filter, this._strictFilter, this._page, this._size);
   }
   async changeLanguage(lang: number) {
     this._languageDefault = lang;
@@ -61,21 +56,13 @@ export class TableProvider {
       id: data.id,
       langs: data.langs,
     });
-    await this.filterAndPaginate(
-      this._filter,
-      this._strictFilter,
-      data.page,
-      this._size
-    );
+    await this.filterAndPaginate(this._filter, this._strictFilter, data.page, this._size);
   }
 
   async savedDataInBatch(filename: string, data: IPropertyRaw[]) {
     const BATCH_SIZE = 100;
 
-    const dataEntities: LanguageEntity[][] = this.chunkArray(
-      data,
-      BATCH_SIZE
-    ).map((batch) =>
+    const dataEntities: LanguageEntity[][] = this.chunkArray(data, BATCH_SIZE).map((batch) =>
       batch.map((item) => ({
         data: JSON.stringify(item),
         lang: filename,
@@ -83,32 +70,21 @@ export class TableProvider {
       }))
     );
 
-    await Promise.all(
-      dataEntities.map((entities) =>
-        this._languageEntityManager.saveAll(entities)
-      )
-    );
+    await Promise.all(dataEntities.map((entities) => this._languageEntityManager.saveAll(entities)));
   }
 
   async mergeProperties(data: IPropertyRaw[], langIndex: number) {
     const BATCH_SIZE = 20;
 
-    const dataEntities: LanguageEntity[][] = this.chunkArray(
-      data,
-      BATCH_SIZE
-    ).map((batch) =>
+    const dataEntities: LanguageEntity[][] = this.chunkArray(data, BATCH_SIZE).map((batch) =>
       batch.map((item) => ({
         data: JSON.stringify(item),
         lang: this._languages[langIndex].filename,
-        status: "CREATED",
+        status: 'CREATED',
       }))
     );
 
-    await Promise.all(
-      dataEntities.map((entities) =>
-        this._languageEntityManager.createdOrUpdated(entities)
-      )
-    );
+    await Promise.all(dataEntities.map((entities) => this._languageEntityManager.createdOrUpdated(entities)));
   }
 
   private chunkArray<T>(array: T[], size: number): T[][] {
@@ -119,14 +95,9 @@ export class TableProvider {
     return result;
   }
 
-  async filterAndPaginate(
-    filter: string[],
-    strictFilter: boolean,
-    page: number,
-    size: number
-  ) {
+  async filterAndPaginate(filter: string[], strictFilter: boolean, page: number, size: number) {
     if (size <= 0 || page <= 0) {
-      throw new Error("Los parámetros `size` y `page` deben ser mayores a 0.");
+      throw new Error('Los parámetros `size` y `page` deben ser mayores a 0.');
     }
     this._filter = filter;
     this._strictFilter = strictFilter;
@@ -193,10 +164,7 @@ export class TableProvider {
     this._eventPublishProvider?.filterTagsPublish(rowIndex, tagIndex);
   }
   async changeSuggestion(data: string) {
-    const suggestions = await this._languageEntityManager.filterSuggestion(
-      data,
-      12
-    );
+    const suggestions = await this._languageEntityManager.filterSuggestion(data, 12);
     this._eventPublishProvider?.suggestionsPublish(suggestions);
   }
 }

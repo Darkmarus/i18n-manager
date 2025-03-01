@@ -1,8 +1,8 @@
-import * as fs from "fs";
-import * as vscode from "vscode";
-import { VscodeUtil } from "../util/vscode-util";
-import { Language } from "./../model/language.interface";
-import { type IPropertyRaw } from "./../model/pagination.interface";
+import * as fs from 'fs';
+import * as vscode from 'vscode';
+import { VscodeUtil } from '../util/vscode-util';
+import { Language } from './../model/language.interface';
+import { type IPropertyRaw } from './../model/pagination.interface';
 
 export class JsonManagerProvider {
   private _flags: any;
@@ -10,13 +10,13 @@ export class JsonManagerProvider {
 
   private async loadFlags() {
     this._flags = {};
-    const file = VscodeUtil.resolverUri("flags.json");
+    const file = VscodeUtil.resolverUri('flags.json');
 
     const rawData = fs.readFileSync(file.fsPath);
     let jsonData = this.stripBom(rawData.toString());
     const flags: { images: string[] } = JSON.parse(jsonData);
     flags.images.forEach((f) => {
-      const key = f.split(".").shift() ?? "";
+      const key = f.split('.').shift() ?? '';
       this._flags[key] = VscodeUtil.resolverUri(f).path;
     });
   }
@@ -27,12 +27,12 @@ export class JsonManagerProvider {
         const rawData = fs.readFileSync(file.fsPath);
         let jsonData = this.stripBom(rawData.toString());
 
-        const filename = file.fsPath.split("\\").pop() ?? "";
+        const filename = file.fsPath.split('\\').pop() ?? '';
         const data = JSON.parse(jsonData);
 
         return [
           {
-            name: filename.split(".").shift() ?? "",
+            name: filename.split('.').shift() ?? '',
             filename,
             fsPath: file.fsPath,
           } as Language,
@@ -62,11 +62,7 @@ export class JsonManagerProvider {
         const newPath = [...path, key];
         const value = obj[key];
 
-        if (
-          typeof value === "object" &&
-          value !== null &&
-          !Array.isArray(value)
-        ) {
+        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
           result.push(...this.flattenJSON(value, newPath));
         } else {
           result.push({ path: newPath, value });
@@ -80,7 +76,7 @@ export class JsonManagerProvider {
   unflattenJSON(obj: any) {
     const result: any = {};
     for (const [key, value] of Object.entries(obj)) {
-      const keys = key.split(".");
+      const keys = key.split('.');
       let current = result;
       for (let i = 0; i < keys.length; i++) {
         if (i === keys.length - 1) {
@@ -95,7 +91,7 @@ export class JsonManagerProvider {
   }
 
   private stripBom(str: string) {
-    if (typeof str !== "string") {
+    if (typeof str !== 'string') {
       throw new TypeError(`Expected a string, got ${typeof str}`);
     }
 

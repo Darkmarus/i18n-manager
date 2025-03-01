@@ -1,17 +1,15 @@
-import sqlite3 from "sqlite3";
-import * as vscode from "vscode";
+import sqlite3 from 'sqlite3';
+import * as vscode from 'vscode';
 
 export class DatabaseProvider {
   private _db?: sqlite3.Database;
   private async open(): Promise<void> {
     this._db = new sqlite3.Database(
-      "D:/project/plugin-vscode/i18n-project/i18n-manager/manager.db",
+      'D:/project/plugin-vscode/i18n-project/i18n-manager/manager.db',
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
       (err) => {
         if (err) {
-          vscode.window.showErrorMessage(
-            "Error while opening database: " + err?.message
-          );
+          vscode.window.showErrorMessage('Error while opening database: ' + err?.message);
           throw err;
         }
       }
@@ -35,9 +33,7 @@ export class DatabaseProvider {
       return new Promise<void>((resolve, reject) => {
         this._db!.close((err) => {
           if (err) {
-            vscode.window.showErrorMessage(
-              "Error while closing database: " + err?.message
-            );
+            vscode.window.showErrorMessage('Error while closing database: ' + err?.message);
             reject(err);
           } else {
             this._db = undefined;
@@ -98,11 +94,11 @@ export class DatabaseProvider {
 
     return new Promise((resolve, reject) => {
       this._db!.serialize(() => {
-        this._db!.run("BEGIN TRANSACTION;");
+        this._db!.run('BEGIN TRANSACTION;');
         const stmt = this._db!.prepare(sql);
         params?.forEach((p) => stmt.run(p));
         stmt.finalize();
-        this._db!.run("COMMIT;", (err) => {
+        this._db!.run('COMMIT;', (err) => {
           err ? reject(err) : resolve();
         });
       });

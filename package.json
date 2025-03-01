@@ -79,7 +79,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "prettier": "prettier --write ."
   },
   "devDependencies": {
     "@types/mocha": "10.0.10",
@@ -90,7 +91,8 @@
     "@vscode/test-cli": "0.0.10",
     "@vscode/test-electron": "2.4.1",
     "eslint": "9.20.1",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "prettier": "3.5.2"
   },
   "dependencies": {
     "sqlite3": "5.1.7"

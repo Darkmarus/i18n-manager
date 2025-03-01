@@ -1,15 +1,15 @@
-import * as vscode from "vscode";
-import type { TableManager } from "../controller/table-manager";
+import * as vscode from 'vscode';
+import type { TableManager } from '../controller/table-manager';
 
 enum EventsListener {
-  LOADED = "loaded",
-  CHANGE_PAGE_AND_FIlTER = "change-page-filter",
-  CHANGE_LANGUAGE = "change-language",
-  CHANGE_STRICT_FILTER = "change-strict-filter",
-  CHANGE_MISSING_FILTER = "change-missing-filter",
-  DELETE_PROPERTY = "delete-property",
-  CHANGE_SUGGESTION = "change-suggestion",
-  MERGE_PROPERTIES = "merge-properties",
+  LOADED = 'loaded',
+  CHANGE_PAGE_AND_FIlTER = 'change-page-filter',
+  CHANGE_LANGUAGE = 'change-language',
+  CHANGE_STRICT_FILTER = 'change-strict-filter',
+  CHANGE_MISSING_FILTER = 'change-missing-filter',
+  DELETE_PROPERTY = 'delete-property',
+  CHANGE_SUGGESTION = 'change-suggestion',
+  MERGE_PROPERTIES = 'merge-properties',
 }
 
 export class EventListenerProvider {
@@ -46,10 +46,10 @@ export class EventListenerProvider {
           this._tableManager.changeSuggestion(message.text);
           break;
         case EventsListener.MERGE_PROPERTIES:
-          this._tableManager.mergeProperties(message.data,message.langIndex);
+          this._tableManager.mergeProperties(message.data, message.langIndex);
           break;
         default:
-          console.log("Event not found", message.type);
+          console.log('Event not found', message.type);
           break;
       }
     });
