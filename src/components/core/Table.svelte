@@ -1,16 +1,13 @@
 <script lang="ts">
-  import type {
-    IPagination,
-    IProperty,
-  } from "../../lib/models/pagination.interface";
-  import { modalProvider } from "../../lib/states/modal-provider.svelte";
-  import { tableProvider } from "../../lib/states/table-provider.svelte";
-  import JsonEditIcon from "../icons/JsonEditIcon.svelte";
-  import TrashIcon from "../icons/TrashIcon.svelte";
-  import AlertDeletePropertyModal from "../modals/template/AlertDeletePropertyModal.svelte";
-  import EditPropertyModal from "../modals/template/EditPropertyModal.svelte";
+  import type { IPagination, IProperty } from '../../lib/models/pagination.interface';
+  import { modalProvider } from '../../lib/states/modal-provider.svelte';
+  import { tableProvider } from '../../lib/states/table-provider.svelte';
+  import JsonEditIcon from '../icons/JsonEditIcon.svelte';
+  import TrashIcon from '../icons/TrashIcon.svelte';
+  import AlertDeletePropertyModal from '../modals/template/AlertDeletePropertyModal.svelte';
+  import EditPropertyModal from '../modals/template/EditPropertyModal.svelte';
 
-  import Badge from "./Badge.svelte";
+  import Badge from './Badge.svelte';
 
   interface Props {
     page?: IPagination;
@@ -54,10 +51,7 @@
   };
 
   const handleDeleteItem = async (item: IProperty) => {
-    const [isConfirmed, langs] = await modalProvider.new<[boolean, string[]]>(
-      AlertDeletePropertyModal,
-      item
-    );
+    const [isConfirmed, langs] = await modalProvider.new<[boolean, string[]]>(AlertDeletePropertyModal, item);
     if (isConfirmed) {
       tableProvider.deleteProperty(item.id, langs);
     }
@@ -75,8 +69,7 @@
   bind:this={tableElement}
   tabindex="0"
   onkeydown={handleKeyNavigation}
-  onclick={handleClickOutTable}
->
+  onclick={handleClickOutTable}>
   <thead class="bg-blue-500 flex text-white w-full">
     <tr class="flex w-full">
       <th class="p-4 w-6/12 text-center uppercase">properties</th>
@@ -85,35 +78,28 @@
       <th class="p-4 w-2/12 text-center uppercase">actions</th>
     </tr>
   </thead>
-  <tbody
-    class="flex flex-col bg-grey-light overflow-y-auto w-full"
-    style="height: calc( 100vh - 250px );"
-  >
+  <tbody class="flex flex-col bg-grey-light overflow-y-auto w-full" style="height: calc( 100vh - 250px );">
     {#if page}
       {#each page.data as item, rowIndex}
         <tr
           class="flex w-full py-2 hover:bg-white/10"
           class:row-selected={indexSelected === rowIndex}
-          onclick={() => (indexSelected = rowIndex)}
-        >
+          onclick={() => (indexSelected = rowIndex)}>
           <td class="w-6/12 pl-2">
             {#each item.path as p, tagIndex}
               <Badge
                 index={tagIndex}
                 text={p}
                 dataAttribute={JSON.stringify({
-                  webviewSection: "filter-tag",
+                  webviewSection: 'filter-tag',
                   preventDefaultContextMenuItems: true,
                   rowIndex,
                   tagIndex,
-                })}
-              />
+                })} />
             {/each}
           </td>
           <td class="w-1/12 flex justify-center">
-            <span
-              >{Array.isArray(item.value) ? "array" : typeof item.value}</span
-            >
+            <span>{Array.isArray(item.value) ? 'array' : typeof item.value}</span>
           </td>
           <td class="w-3/12 flex">
             <div class="truncate max-w-72">
@@ -121,12 +107,7 @@
             </div>
           </td>
           <td class="w-2/12 flex justify-center">
-            <button
-              type="button"
-              class="cursor-pointer"
-              onclick={() => handleEditItem(item)}
-              aria-label="Edit"
-            >
+            <button type="button" class="cursor-pointer" onclick={() => handleEditItem(item)} aria-label="Edit">
               <JsonEditIcon />
             </button>
 
@@ -134,8 +115,7 @@
               type="button"
               class="cursor-pointer ml-2"
               onclick={() => handleDeleteItem(item)}
-              aria-label="Delete"
-            >
+              aria-label="Delete">
               <TrashIcon />
             </button>
           </td>

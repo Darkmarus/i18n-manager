@@ -34,7 +34,6 @@
       ml-2"
   class:bg-blue-500={active}
   {disabled}
-  onclick={() => onclick && onclick()}
->
+  onclick={() => onclick && onclick()}>
   {@render children()}
 </button>

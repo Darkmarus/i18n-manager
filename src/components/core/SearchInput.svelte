@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { fly } from "svelte/transition";
-  import { suggestionProvider } from "../../lib/states/suggestion-provider.svelte";
-  import { Debounce } from "../../lib/utils/debounce";
-  import LoadingIcon from "../icons/LoadingIcon.svelte";
-  import SearchIcon from "../icons/SearchIcon.svelte";
-  import Badge from "./Badge.svelte";
+  import { fly } from 'svelte/transition';
+  import { suggestionProvider } from '../../lib/states/suggestion-provider.svelte';
+  import { Debounce } from '../../lib/utils/debounce';
+  import LoadingIcon from '../icons/LoadingIcon.svelte';
+  import SearchIcon from '../icons/SearchIcon.svelte';
+  import Badge from './Badge.svelte';
   interface Props {
     searchedItems: string[];
     onSearch?: (items: string[]) => void;
@@ -12,7 +12,7 @@
 
   let { onSearch, searchedItems = $bindable() }: Props = $props();
 
-  let text = $state("");
+  let text = $state('');
   let isLoading = $state(false);
   let selectedIndex = $state(-1);
 
@@ -23,7 +23,7 @@
     if (!value) return;
     searchedItems.push(value);
     onSearch?.(searchedItems);
-    text = "";
+    text = '';
     debounceClear.call(clearSuggestions, true);
   };
 
@@ -58,26 +58,26 @@
   };
 
   const searchSuggestions = (text: string) => {
-    suggestionProvider.change(text || "");
+    suggestionProvider.change(text || '');
     isLoading = false;
   };
 
   const handleInputKeydown = (event: any) => {
     switch (event.key) {
-      case "Enter":
+      case 'Enter':
         if (selectedIndex !== -1) {
           addSearchedItem(suggestionProvider.data[selectedIndex]);
         } else {
           addSearchedItem(text);
         }
         break;
-      case "ArrowDown":
+      case 'ArrowDown':
         handleDownKey();
         break;
-      case "ArrowUp":
+      case 'ArrowUp':
         handleUpKey();
         break;
-      case "Escape":
+      case 'Escape':
         clearSuggestions();
         break;
       default:
@@ -117,16 +117,12 @@
       bind:value={text}
       onkeydown={(event: any) => handleInputKeydown(event)}
       onblur={() => {
-        console.log("clear on blur");
+        console.log('clear on blur');
         debounceClear.call(clearSuggestions);
-      }}
-    />
+      }} />
   </div>
 
-  <ul
-    class="absolute w-full bg-white top-10 shadow"
-    transition:fly={{ y: -10, duration: 150 }}
-  >
+  <ul class="absolute w-full bg-white top-10 shadow" transition:fly={{ y: -10, duration: 150 }}>
     {#each suggestionProvider.data as item, index}
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -136,8 +132,7 @@
         class:bg-blue-500={selectedIndex === index}
         class:text-white={selectedIndex === index}
         onclick={() => addSearchedItem(item)}
-        tabindex={selectedIndex === index ? 0 : -1}
-      >
+        tabindex={selectedIndex === index ? 0 : -1}>
         {item}
       </li>
     {/each}

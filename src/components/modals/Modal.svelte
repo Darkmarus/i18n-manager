@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import type { ItemModal } from "../../states/modal-provider.svelte";
+  import { onMount } from 'svelte';
+  import type { ItemModal } from '../../states/modal-provider.svelte';
 
   interface Props {
     context: ItemModal;

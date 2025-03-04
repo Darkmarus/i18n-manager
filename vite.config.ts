@@ -10,7 +10,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
       output: {
-        // dir: "../i18n-manager/media",
+        dir: '../i18n-manager/media',
         entryFileNames: '[name].js', // Nombres de los archivos de entrada
         chunkFileNames: '[name].js', // Nombres de los chunks
         assetFileNames: '[name][extname]', // Nombres de los assets

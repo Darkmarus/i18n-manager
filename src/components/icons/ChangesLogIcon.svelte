@@ -4,8 +4,7 @@
   fill="none"
   class="size-5"
   version="1.1"
-  stroke="currentColor"
->
+  stroke="currentColor">
   <path
     stroke-linecap="round"
     stroke-linejoin="round"

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import type { ILanguage } from "../../../models/language.interface";
+  import { onMount } from 'svelte';
+  import type { ILanguage } from '../../../models/language.interface';
 
   interface Props {
     languages: ILanguage[];
@@ -23,12 +23,9 @@
   <select
     class="w-full h-10 border border-slate-200 rounded-md px-3 py-2 cursor-pointer {className}"
     bind:value={selected}
-    onchange={(event: any) => onChange && onChange(+event.target.value)}
-  >
+    onchange={(event: any) => onChange && onChange(+event.target.value)}>
     {#each languages as lang}
-      <option class="cursor-pointer text-black" value={lang.id}
-        >{lang.filename}</option
-      >
+      <option class="cursor-pointer text-black" value={lang.id}>{lang.filename}</option>
     {/each}
   </select>
 </div>
