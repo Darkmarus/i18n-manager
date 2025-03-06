@@ -10,7 +10,7 @@
     onSearch?: (items: string[]) => void;
   }
 
-  let { onSearch, searchedItems = $bindable() }: Props = $props();
+  let { onSearch, searchedItems }: Props = $props();
 
   let text = $state('');
   let isLoading = $state(false);
@@ -25,6 +25,16 @@
     onSearch?.(searchedItems);
     text = '';
     debounceClear.call(clearSuggestions, true);
+  };
+
+  const popSearchedItem = (): [boolean, string] => {
+    let lastItem = '';
+    const isEmpty = searchedItems.length !== 0;
+    if (isEmpty) {
+      lastItem = searchedItems.pop() ?? '';
+      onSearch?.(searchedItems);
+    }
+    return [isEmpty, lastItem];
   };
 
   const removeSearchedItem = (index: number) => {
@@ -52,24 +62,42 @@
     }
   };
 
+  const handleBackspaceKey = (event: any) => {
+    if (!text) {
+      event.preventDefault();
+      const [isPop, lastText] = popSearchedItem();
+      if (isPop) {
+        text = lastText;
+      }
+    }
+    searchSuggestions();
+  };
+
+  const handleEnterKey = () => {
+    if (selectedIndex !== -1) {
+      addSearchedItem(suggestionProvider.data[selectedIndex]);
+    } else {
+      addSearchedItem(text);
+    }
+  };
+
   const clearSuggestions = () => {
     selectedIndex = -1;
     suggestionProvider.data = [];
   };
 
-  const searchSuggestions = (text: string) => {
-    suggestionProvider.change(text || '');
-    isLoading = false;
+  const searchSuggestions = () => {
+    isLoading = true;
+    debounceSearchSuggestions.call(() => {
+      suggestionProvider.change(text || '');
+      isLoading = false;
+    });
   };
 
   const handleInputKeydown = (event: any) => {
     switch (event.key) {
       case 'Enter':
-        if (selectedIndex !== -1) {
-          addSearchedItem(suggestionProvider.data[selectedIndex]);
-        } else {
-          addSearchedItem(text);
-        }
+        handleEnterKey();
         break;
       case 'ArrowDown':
         handleDownKey();
@@ -80,11 +108,11 @@
       case 'Escape':
         clearSuggestions();
         break;
+      case 'Backspace':
+        handleBackspaceKey(event);
+        break;
       default:
-        debounceSearchSuggestions.call(() => {
-          isLoading = true;
-          searchSuggestions(text);
-        });
+        searchSuggestions();
     }
   };
 </script>

@@ -75,6 +75,17 @@ class TableProvider {
     }
     vscodeEventPublisher.deleteProperty(id, langs, page);
   }
+  public setSettings(data: {
+    languageDefault: number;
+    strictFilter: boolean;
+    missingFilter: boolean;
+    filter: string[];
+  }) {
+    this.filter = data.filter;
+    this.langIndex = data.languageDefault;
+    this.strictFilter = data.strictFilter;
+    this.missingFilter = data.missingFilter;
+  }
 }
 
 export const tableProvider = new TableProvider();

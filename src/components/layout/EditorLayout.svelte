@@ -12,8 +12,10 @@
   <div class="flex">
     <Selection
       languages={tableProvider.languages}
+      initValue={tableProvider.langIndex}
       onChange={(value: number) => tableProvider.changeLanguage(value)}
       class="ml-4" />
+
     <CheckInput
       class="ml-4 mt-2"
       label="Strict"

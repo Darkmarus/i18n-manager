@@ -10,6 +10,7 @@ class VscodeEventListener {
     'filter-single': this.changeSingleFilter.bind(this),
     'filter-tags': this.changeTagsFilter.bind(this),
     'refresh-suggestions': this.updateSuggestions.bind(this),
+    'get-settings': this.getSettings.bind(this),
   };
 
   listeningEvents() {
@@ -58,6 +59,15 @@ class VscodeEventListener {
 
   private updateSuggestions(data: string[]) {
     suggestionProvider.data = data;
+  }
+
+  private getSettings(data: {
+    languageDefault: number;
+    strictFilter: boolean;
+    missingFilter: boolean;
+    filter: string[];
+  }) {
+    tableProvider.setSettings(data);
   }
 }
 
