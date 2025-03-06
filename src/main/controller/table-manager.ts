@@ -51,6 +51,7 @@ export class TableManager {
 
   loadData() {
     this._tableProvider.loadedData();
+    this._tableProvider.sendSettings();
   }
 
   activeView() {

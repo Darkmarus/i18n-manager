@@ -167,4 +167,12 @@ export class TableProvider {
     const suggestions = await this._languageEntityManager.filterSuggestion(data, 12);
     this._eventPublishProvider?.suggestionsPublish(suggestions);
   }
+  sendSettings() {
+    this._eventPublishProvider?.settingsPublish({
+      languageDefault: this._languageDefault,
+      strictFilter: this._strictFilter,
+      missingFilter: this._missingFilter,
+      filter: this._filter,
+    });
+  }
 }
