@@ -73,7 +73,7 @@
   <thead class="bg-blue-500 flex text-white w-full">
     <tr class="flex w-full">
       <th class="p-4 w-6/12 text-center uppercase">properties</th>
-      <th class="p-4 w-1/12 text-center uppercase">type</th>
+      <th class="p-4 w-1/12 text-center uppercase">status</th>
       <th class="p-4 w-3/12 text-center uppercase">value</th>
       <th class="p-4 w-2/12 text-center uppercase">actions</th>
     </tr>
@@ -99,7 +99,7 @@
             {/each}
           </td>
           <td class="w-1/12 flex justify-center">
-            <span>{Array.isArray(item.value) ? 'array' : typeof item.value}</span>
+            <span>{item.status ?? 'UNCHANGED'}</span>
           </td>
           <td class="w-3/12 flex">
             <div class="truncate max-w-72">
