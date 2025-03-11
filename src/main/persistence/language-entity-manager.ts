@@ -42,18 +42,21 @@ export class LanguageEntityManager {
     page: number,
     pageSize: number,
     modeOrderStrict: boolean,
-    propertiesImplemented: boolean
+    propertiesImplemented: boolean,
+    changedFilter: boolean
   ): Promise<LanguageEntity[]> {
     const offset = (page - 1) * pageSize;
     let sql: string = '';
     let params: any[] = [];
     const conditionsFilterImplemented = this.conditionsFilterImplemented(propertiesImplemented, sizeLanguages);
+    const statusConditions = this.statusConditionsFilter(changedFilter);
+
     if (filter.length > 0) {
       const [conditions, valueConditions] = this.conditionsFilter(filter, modeOrderStrict);
-      sql = `SELECT * FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED' LIMIT ? OFFSET ?;`;
+      sql = `SELECT * FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND ${statusConditions} LIMIT ? OFFSET ?;`;
       params = [...valueConditions, lang, pageSize, offset];
     } else {
-      sql = `SELECT * FROM language WHERE lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED' LIMIT ? OFFSET ?;`;
+      sql = `SELECT * FROM language WHERE lang = ? ${conditionsFilterImplemented} AND ${statusConditions} LIMIT ? OFFSET ?;`;
       params = [lang, pageSize, offset];
     }
     return this._databaseProvider.getAll<LanguageEntity>(sql, params);
@@ -64,17 +67,20 @@ export class LanguageEntityManager {
     sizeLanguages: number,
     lang: string,
     modeOrderStrict: boolean,
-    propertiesImplemented: boolean
+    propertiesImplemented: boolean,
+    changedFilter: boolean
   ): Promise<{ total: number } | undefined> {
     let sql: string = '';
     let params: any[] = [];
     const conditionsFilterImplemented = this.conditionsFilterImplemented(propertiesImplemented, sizeLanguages);
+    const statusConditions = this.statusConditionsFilter(changedFilter);
+
     if (filter.length > 0) {
       const [conditions, valueConditions] = this.conditionsFilter(filter, modeOrderStrict);
-      sql = `SELECT COUNT(*) AS total FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED';`;
+      sql = `SELECT COUNT(*) AS total FROM language WHERE ${conditions} AND lang = ? ${conditionsFilterImplemented} AND ${statusConditions};`;
       params = [...valueConditions, lang];
     } else {
-      sql = `SELECT COUNT(*) AS total FROM language WHERE lang = ? ${conditionsFilterImplemented} AND status IS NOT 'DELETED';`;
+      sql = `SELECT COUNT(*) AS total FROM language WHERE lang = ? ${conditionsFilterImplemented} AND ${statusConditions};`;
       params = [lang];
     }
     return this._databaseProvider.get<{ total: number }>(sql, params);
@@ -88,6 +94,14 @@ export class LanguageEntityManager {
       )`;
     }
     return '';
+  }
+
+  private statusConditionsFilter(data: boolean) {
+    if (data) {
+      return `status IS NOT NULL`;
+    } else {
+      return `status IS NOT 'DELETED'`;
+    }
   }
 
   private conditionsFilter(filter: string[], modeOrderStrict: boolean): [string, any[]] {

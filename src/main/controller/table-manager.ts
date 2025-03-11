@@ -108,4 +108,7 @@ export class TableManager {
     const uri = vscode.Uri.file(VscodeUtil.resolverUri(file).path);
     return this._panel.webview.asWebviewUri(uri);
   }
+  changeChangedFilter(data: boolean) {
+    this._tableProvider.changeChangedFilter(data);
+  }
 }

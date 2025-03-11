@@ -56,6 +56,7 @@ export class EventPublishProvider {
     languageDefault: number;
     strictFilter: boolean;
     missingFilter: boolean;
+    changedFilter: boolean;
     filter: string[];
   }) {
     this._webviewPanel.webview.postMessage({

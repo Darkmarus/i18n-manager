@@ -10,6 +10,7 @@ export class TableProvider {
   private _languageDefault = 0;
   private _strictFilter: boolean = false;
   private _missingFilter: boolean = false;
+  private _changedFilter: boolean = false;
   private _page: number = 1;
   private _size: number = 18;
   private _filter: string[] = [];
@@ -36,12 +37,10 @@ export class TableProvider {
 
   async loadedData() {
     this._eventPublishProvider?.languagesPublish(this.languages);
-
     this.filterAndPaginate(this._filter, this._strictFilter, this._page, this._size);
   }
   async changeLanguage(lang: number) {
     this._languageDefault = lang;
-
     this.filterAndPaginate(this._filter, this._strictFilter, 1, this._size);
   }
   changeStrictFilter(strictFilterMode: boolean) {
@@ -49,6 +48,10 @@ export class TableProvider {
   }
   changeMissingFilter(data: boolean) {
     this._missingFilter = data;
+    this.filterAndPaginate(this._filter, this._strictFilter, 1, this._size);
+  }
+  changeChangedFilter(data: boolean) {
+    this._changedFilter = data;
     this.filterAndPaginate(this._filter, this._strictFilter, 1, this._size);
   }
   async deleteProperty(data: { id: number; langs: string[]; page: number }) {
@@ -111,7 +114,8 @@ export class TableProvider {
       this._page,
       this._size,
       this._strictFilter,
-      this._missingFilter
+      this._missingFilter,
+      this._changedFilter
     );
 
     const totalElements = (
@@ -120,7 +124,8 @@ export class TableProvider {
         this.languages.length,
         this.getLanguageDefault().filename,
         this._strictFilter,
-        this._missingFilter
+        this._missingFilter,
+        this._changedFilter
       )) || { total: 0 }
     ).total;
 
@@ -171,6 +176,7 @@ export class TableProvider {
     this._eventPublishProvider?.settingsPublish({
       languageDefault: this._languageDefault,
       strictFilter: this._strictFilter,
+      changedFilter: this._changedFilter,
       missingFilter: this._missingFilter,
       filter: this._filter,
     });

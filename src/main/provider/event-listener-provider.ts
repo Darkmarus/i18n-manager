@@ -1,20 +1,21 @@
 import * as vscode from 'vscode';
 import type { TableManager } from '../controller/table-manager';
 
-enum EventsListener {
-  LOADED = 'loaded',
-  CHANGE_PAGE_AND_FIlTER = 'change-page-filter',
-  CHANGE_LANGUAGE = 'change-language',
-  CHANGE_STRICT_FILTER = 'change-strict-filter',
-  CHANGE_MISSING_FILTER = 'change-missing-filter',
-  DELETE_PROPERTY = 'delete-property',
-  CHANGE_SUGGESTION = 'change-suggestion',
-  MERGE_PROPERTIES = 'merge-properties',
-}
-
 export class EventListenerProvider {
   private readonly _webviewPanel: vscode.WebviewPanel;
   private readonly _tableManager: TableManager;
+
+  private readonly _eventHandle: { [key: string]: (data: any) => void } = {
+    loaded: this.loadData,
+    'change-page-filter': this.filterAndPaginate,
+    'change-language': this.changeLanguage,
+    'change-strict-filter': this.changeStrictFilter,
+    'change-missing-filter': this.changeMissingFilter,
+    'delete-property': this.deleteProperty,
+    'change-suggestion': this.changeSuggestion,
+    'merge-properties': this.mergeProperties,
+    'change-changed-filter': this.changeChangedFilter,
+  };
 
   constructor(TableManager: TableManager, webviewPanel: vscode.WebviewPanel) {
     this._tableManager = TableManager;
@@ -23,35 +24,39 @@ export class EventListenerProvider {
 
   watchEvents() {
     this._webviewPanel.webview.onDidReceiveMessage((message) => {
-      switch (message.type) {
-        case EventsListener.LOADED:
-          this._tableManager.loadData();
-          break;
-        case EventsListener.CHANGE_PAGE_AND_FIlTER:
-          this._tableManager.filterAndPaginate(message.data);
-          break;
-        case EventsListener.CHANGE_LANGUAGE:
-          this._tableManager.changeLanguage(message.data);
-          break;
-        case EventsListener.CHANGE_STRICT_FILTER:
-          this._tableManager.changeStrictFilter(message.data);
-          break;
-        case EventsListener.CHANGE_MISSING_FILTER:
-          this._tableManager.changePropertiesImplemented(message.data);
-          break;
-        case EventsListener.DELETE_PROPERTY:
-          this._tableManager.deleteProperty(message.data);
-          break;
-        case EventsListener.CHANGE_SUGGESTION:
-          this._tableManager.changeSuggestion(message.text);
-          break;
-        case EventsListener.MERGE_PROPERTIES:
-          this._tableManager.mergeProperties(message.data, message.langIndex);
-          break;
-        default:
-          console.log('Event not found', message.type);
-          break;
+      const handle = this._eventHandle[message.type];
+      if (handle) {
+        handle.bind(this)(message);
+      } else {
+        console.error('Event not found');
       }
     });
+  }
+  private loadData() {
+    this._tableManager.loadData();
+  }
+  private filterAndPaginate(message: any) {
+    this._tableManager.filterAndPaginate(message.data);
+  }
+  private changeLanguage(message: any) {
+    this._tableManager.changeLanguage(message.data);
+  }
+  private changeStrictFilter(message: any) {
+    this._tableManager.changeStrictFilter(message.data);
+  }
+  private changeMissingFilter(message: any) {
+    this._tableManager.changePropertiesImplemented(message.data);
+  }
+  private deleteProperty(message: any) {
+    this._tableManager.deleteProperty(message.data);
+  }
+  private changeSuggestion(message: any) {
+    this._tableManager.changeSuggestion(message.text);
+  }
+  private mergeProperties(message: any) {
+    this._tableManager.mergeProperties(message.data, message.langIndex);
+  }
+  private changeChangedFilter(message: any) {
+    this._tableManager.changeChangedFilter(message.data);
   }
 }
