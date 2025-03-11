@@ -3,7 +3,6 @@
   import { modalProvider } from '../../lib/states/modal-provider.svelte';
   import { vscodeEventPublisher } from '../../lib/states/vscode-event-publish.svelte';
   import Button from '../core/Button.svelte';
-  import ChangesLogIcon from '../icons/ChangesLogIcon.svelte';
   import JsonEditIcon from '../icons/JsonEditIcon.svelte';
   import SettingsIcon from '../icons/SettingsIcon.svelte';
   import MergePropertyModal from '../modals/template/MergePropertyModal.svelte';
@@ -14,11 +13,6 @@
       type: 'EDITOR',
       label: 'Editor',
       component: JsonEditIcon,
-    },
-    {
-      type: 'CHANGES',
-      label: 'Changes',
-      component: ChangesLogIcon,
     },
     {
       type: 'SETTINGS',
@@ -71,11 +65,7 @@
   </div>
 {/if}
 
-{#if sectionActive.type === 'CHANGES'}
-  <div class="container-main">
-    <div>changes</div>
-  </div>
-{:else if sectionActive.type === 'EDITOR'}
+{#if sectionActive.type === 'EDITOR'}
   <div class="container-main">
     <EditorLayout />
   </div>

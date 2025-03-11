@@ -9,6 +9,7 @@ enum eventPublish {
   DELETE_PROPERTY = 'delete-property',
   CHANGE_SUGGESTION = 'change-suggestion',
   MERGE_PROPERTIES = 'merge-properties',
+  CHANGE_CHANGED_FILTER = 'change-changed-filter',
 }
 class VscodeEventPublisher {
   private readonly _vscode = acquireVsCodeApi();
@@ -63,6 +64,12 @@ class VscodeEventPublisher {
       type: eventPublish.MERGE_PROPERTIES,
       data,
       langIndex,
+    });
+  }
+  changeChangedFilter(data: boolean) {
+    this._vscode.postMessage({
+      type: eventPublish.CHANGE_CHANGED_FILTER,
+      data,
     });
   }
 }

@@ -27,6 +27,12 @@
       label="Missing"
       checked={tableProvider.missingFilter}
       onClick={(value: boolean) => tableProvider.changeMissingFilter(value)} />
+
+    <CheckInput
+      class="ml-4 mt-2"
+      label="Changes"
+      checked={tableProvider.changedFilter}
+      onClick={(value: boolean) => tableProvider.changeChangedFilter(value)} />
   </div>
 </div>
 

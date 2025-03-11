@@ -64,6 +64,7 @@ class VscodeEventListener {
   private getSettings(data: {
     languageDefault: number;
     strictFilter: boolean;
+    changedFilter: boolean;
     missingFilter: boolean;
     filter: string[];
   }) {
